@@ -228,6 +228,10 @@ alert("i don't have my own server, sorry. but the name has been copied to your c
  $('#item-2-spotify').dblclick(function(){
  window.open('https://open.spotify.com/user/hardzguardian');
   }); 
+  
+  $('#item-2-myanimelist').dblclick(function(){
+ window.open('https://myanimelist.net/profile/HardzGuardian');
+  });
 
   /* column-3 */
 
