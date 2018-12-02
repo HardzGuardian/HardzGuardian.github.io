@@ -108,22 +108,6 @@ $("#container").click(function(){
       $('.folder-contact').children().children(".item-arrow").show();
   });
 
-  /* waifu */
-
-  $('#item-1-waifu').click(function(){
-      $('#item-1-waifu').removeClass("old-selected");
-      $('#item-1-waifu').children(".item-arrow-grey").hide();
-      $('#item-1-waifu').siblings().removeClass("old-selected");
-      $('#item-1-waifu').siblings().children(".item-arrow-grey").hide();
-      $('.folder-waifu').show();
-      $('.folder-waifu').siblings().hide();
-      $('.folder-waifu').children().removeClass("selected");
-      $('.folder-waifu').children().removeClass("old-selected");
-      $('.folder-waifu').children().children(".item-arrow-grey").hide();
-      $('.folder-waifu').children().children(".item-arrow-blue").hide();
-      $('.folder-waifu').children().children(".item-arrow").show();
-  });
-
   /* Column-2 */
 
   /* projects */
@@ -246,30 +230,6 @@ alert("i don't have my own server, sorry. but the name has been copied to your c
   
   $('#item-2-myanimelist').dblclick(function(){
  window.open('https://myanimelist.net/profile/HardzGuardian');
-  });
-    
-    /* waifu */
-    
-  var container = $('.folder-waifu');
-  var path = $('#item-1-waifu');
-  container.click(function(){
-    path.removeClass("selected");
-    path.addClass("old-selected");
-    path.children(".item-arrow-blue").hide();
-    path.children(".item-arrow").hide();
-    path.children(".item-arrow-grey").show();
-  });
-   
-  $('#waifu-1').dblclick(function(){
- window.open('https://i.imgur.com/d8KFHHz.jpg');
-  });
-    
-  $('#waifu-2').dblclick(function(){
- window.open('https://i.imgur.com/wPtS595.jpg');
-  });
-    
-  $('#waifu-3').dblclick(function(){
- window.open('https://i.imgur.com/WXJg2kz.jpg');
   });
     
   /* column-3 */

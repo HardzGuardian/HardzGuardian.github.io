@@ -103,6 +103,15 @@
       // gl_FragColor = vec4(abs(colour), 1.);
     }
 </script>
+    <style>
+        html{
+            background:url(flower.jpg) no-repeat center center fixed;
+            -webkit-background-size:cover;
+            -moz-background-size:cover;
+            -o-background-size: cover;
+            background: cover;                       
+        }   
+    </style>
 <!-- window 1 -->
 <div class="window ui-draggable ui-resizable" id="window-1">
   <!-- components -->
@@ -192,20 +201,6 @@
                     <img class="item-icon-folder" src="myanimelist.png">
                     <div class="item-text">Myanimelist</div>
                   </div>
-                </div>
-                <!-- waifu folders -->
-                <div class="folder-waifu">
-                  <div class="item" id="waifu-1">
-                    <img class="item-icon-normal" src=" photo.png">
-                    <div class="item-text-normal">Iroha.jpg</div>
-                      </div>
-                 <div class="item" id="waifu-2">
-                    <img class="item-icon-normal" src=" photo.png">
-                    <div class="item-text-normal">Cromatic.jpg</div>
-                     </div>
-                  <div class="item" id="waifu-3">
-                    <img class="item-icon-normal" src=" photo.png">
-                    <div class="item-text-normal">dat.jpg</div>
                   </div>
                 </div>
               </div>
@@ -277,7 +272,6 @@
 <img src="folder-icon-2.png" class="folder-opener ui-draggable">
 <div class="folder-opener-text ui-draggable">Yakasuko</div>
 </div>
-<div id="container" class="container"></div>
 <script  src="js/index.js"></script>
 <script src="js/script.js"></script>
 <script src="js/items.js"></script>
