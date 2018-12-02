@@ -108,6 +108,7 @@ $("#container").click(function(){
       $('.folder-contact').children().children(".item-arrow").show();
   });
 
+
   /* Column-2 */
 
   /* projects */
@@ -231,7 +232,7 @@ alert("i don't have my own server, sorry. but the name has been copied to your c
   $('#item-2-myanimelist').dblclick(function(){
  window.open('https://myanimelist.net/profile/HardzGuardian');
   });
-    
+
   /* column-3 */
 
   $('.column-3').click(function(){

@@ -420,10 +420,6 @@ body{
 	display:none;
 }
 
-.folder-waifu{
-	display:none;
-}
-
 .folder-shop{
 	display:none;
 }
@@ -588,3 +584,4 @@ outline-style: solid;
     100% {opacity:0}
 
 }
+
