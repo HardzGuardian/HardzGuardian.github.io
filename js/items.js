@@ -211,7 +211,7 @@ $("#container").click(function(){
     
 
   $('#item-2-steam').dblclick(function(){
- window.open('https://steamcommunity.com/id/yakasuke3');
+ window.open('https://steamcommunity.com/id/yakasuke3/');
   });    
 
   $('#item-2-discord').dblclick(function(){
