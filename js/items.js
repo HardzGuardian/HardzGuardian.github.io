@@ -201,7 +201,7 @@ $("#container").click(function(){
 
 
   $('#item-2-twitter').dblclick(function(){
-     window.open('https://twitter.com/HardzGuardian');
+     window.open('https://x.com/yakasuke1');
   });
 
 
