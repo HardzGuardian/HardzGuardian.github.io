@@ -449,13 +449,6 @@ body {
     margin-bottom: 100px;
 }
 
-.about-image {
-    width: 100%;
-    aspect-ratio: 0.75;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-}
 
 .about-text h3 {
     font-size: 32px;
@@ -921,3 +914,38 @@ footer {
         font-size: 28px;
     }
 }
+
+/* About Section Image Fix */
+.about-image {
+    width: 100%;
+    aspect-ratio: 0.75;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.about-image-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.8; /* Adjust opacity as needed */
+    transition: opacity 0.3s ease;
+}
+
+.about-image-inner:hover {
+    opacity: 1;
+}
+
+/*.about-image {
+    width: 100%;
+    aspect-ratio: 0.75;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}*/
