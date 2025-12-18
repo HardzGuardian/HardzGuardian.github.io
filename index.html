@@ -27,8 +27,8 @@
         <div class="nav-content">
             <a href="#" class="logo">.portfolio</a>
             <ul class="nav-links">
-                <li><a href="#about" class="nav-link">about</a></li>
-                <li><a href="#projects" class="nav-link active">projects</a></li>
+                <li><a href="#about" class="nav-link active">about</a></li>
+                <li><a href="#projects" class="nav-link">projects</a></li>
                 <li><a href="#contact" class="nav-link">contact</a></li>
             </ul>
         </div>
@@ -181,7 +181,7 @@
 
             <section class="about-content">
                 <div class="about-image">
-    <div class="about-image-inner" style="background-image: url('img/sagar.jpg');"></div>
+                    <div class="about-image-inner" style="background-image: url('img/sagar.jpg');"></div>
                 </div>
                 <div class="about-text">
                     <div class="stat-label">.hello</div>
@@ -271,8 +271,8 @@
                 <a href="#" class="footer-logo">.portfolio</a>
             </div>
             <div class="footer-center">
-                <a href="#projects" class="footer-link">projects</a>
                 <a href="#about" class="footer-link">about</a>
+                <a href="#projects" class="footer-link">projects</a>
                 <a href="#contact" class="footer-link">contact</a>
             </div>
             <div class="footer-right">
@@ -445,9 +445,14 @@
 
         if (window.location.hash) {
             const initialTab = window.location.hash.substring(1);
-            if (['projects', 'about', 'contact'].includes(initialTab)) {
+            if (['about', 'projects', 'contact'].includes(initialTab)) {
                 switchTab(initialTab);
             }
+        } else {
+            // Default to about tab when no hash is specified
+            switchTab('about');
+            // Update URL hash without triggering scroll
+            history.replaceState(null, null, '#about');
         }
 
         function updateProgressBar() {
