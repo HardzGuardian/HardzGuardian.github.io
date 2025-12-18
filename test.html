@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagar Salunkhe</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=DM+Mono:wght@300;400&display=swap');
+
+        :root {
+            --bg-black: #000;
+            --text-white: #fff;
+            --text-gray: rgba(255, 255, 255, 0.5);
+            --border-gray: rgba(255, 255, 255, 0.25);
+            --accent-green: rgb(255, 255, 255);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--bg-black);
+            color: var(--text-white);
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .nav-content {
+            max-width: 1920px;
+            margin: 0 auto;
+            padding: 20px 140px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--text-white);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 48px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 17px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-white);
+        }
+
+        .progress-bar-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(243, 243, 243, 0.1);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-green);
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 0.1s ease-out;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .grid-line {
+            position: absolute;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.25) 100%);
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 1;
+            padding-top: 92px;
+            max-width: 1920px;
+            margin: 0 auto;
+            padding-left: 120px;
+            padding-right: 120px;
+            min-height: 100vh;
+        }
+
+        .tab-container {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            padding-bottom: 100px;
+        }
+
+        .tab-container.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .hero {
+            padding: 120px 0 80px;
+        }
+
+        .hero h1 {
+            font-size: 104px;
+            font-weight: 500;
+            letter-spacing: -4px;
+            line-height: 1.25;
+            margin-bottom: 48px;
+        }
+
+        .hero-description {
+            font-size: 64px;
+            font-weight: 500;
+            letter-spacing: -2.7px;
+            line-height: 1.35;
+            margin-bottom: 60px;
+            max-width: 1200px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+            margin-bottom: 100px;
+        }
+
+        .stat-item {
+            border-top: 1px solid var(--border-gray);
+            padding-top: 24px;
+        }
+
+        .stat-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: -0.3px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 36px;
+            margin-bottom: 100px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-4px);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            overflow: hidden;
+        }
+
+        .project-type {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .project-title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .project-description {
+            color: var(--text-gray);
+            font-size: 16px;
+            line-height: 1.75;
+        }
+
+        /* Project Modal */
+        .project-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            overflow-y: auto;
+        }
+
+        .project-modal.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .modal-content {
+            max-width: 1400px;
+            margin: 100px auto;
+            padding: 60px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-gray);
+            border-radius: 50%;
+            background: transparent;
+            color: var(--text-white);
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            gap: 60px;
+            margin-bottom: 48px;
+        }
+
+        .modal-image-section {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .modal-image-container {
+            width: 100%;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed var(--border-gray);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-image-container:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--text-white);
+        }
+
+        .modal-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-placeholder {
+            text-align: center;
+            color: var(--text-gray);
+        }
+
+        .upload-placeholder svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .modal-info {
+            padding-top: 20px;
+        }
+
+        .modal-header {
+            margin-bottom: 48px;
+        }
+
+        .modal-type {
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 12px;
+        }
+
+        .modal-title {
+            font-size: 48px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .modal-description {
+            font-size: 20px;
+            color: var(--text-gray);
+            line-height: 1.75;
+            margin-bottom: 36px;
+        }
+
+        .modal-section {
+            margin-bottom: 48px;
+        }
+
+        .modal-section h3 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .modal-section p,
+        .modal-section ul {
+            font-size: 18px;
+            color: var(--text-gray);
+            line-height: 1.75;
+        }
+
+        .modal-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .modal-section ul li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .modal-section ul li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+        }
+
+        .modal-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-gray);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .modal-links {
+            display: flex;
+            gap: 16px;
+            margin-top: 36px;
+        }
+
+        .modal-link {
+            padding: 12px 32px;
+            background: var(--text-white);
+            color: var(--bg-black);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .modal-link:hover {
+            background: var(--text-gray);
+            transform: translateY(-2px);
+        }
+
+        .modal-link.secondary {
+            background: transparent;
+            color: var(--text-white);
+            border: 1px solid var(--border-gray);
+        }
+
+        .modal-link.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 100px;
+        }
+
+        .about-image {
+            width: 100%;
+            aspect-ratio: 0.75;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .about-text h3 {
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .about-text p {
+            color: var(--text-gray);
+            font-size: 20px;
+            line-height: 1.75;
+            margin-bottom: 32px;
+        }
+
+        .experience-item {
+            border-top: 1px solid var(--border-gray);
+            padding: 36px 0;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 48px;
+        }
+
+        .experience-date {
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .experience-details h4 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .experience-role {
+            color: var(--text-gray);
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .experience-description {
+            color: var(--text-gray);
+            font-size: 20px;
+            line-height: 1.75;
+        }
+
+        /* Contact Section */
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .contact-content h2 {
+            font-size: 64px;
+            font-weight: 500;
+            margin-bottom: 48px;
+            line-height: 1.35;
+        }
+
+        .contact-email {
+            font-size: 32px;
+            color: var(--accent-green);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 48px;
+        }
+
+        .contact-email:hover {
+            opacity: 0.8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+        }
+
+        .social-link {
+            width: 48px;
+            height: 48px;
+            border: 1px solid var(--border-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-white);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-gray);
+            padding: 80px 120px;
+            margin-top: 0;
+            position: relative;
+            background-color: var(--bg-black);
+        }
+
+        .footer-content {
+            max-width: 1920px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 48px;
+        }
+
+        .footer-left {
+            justify-self: start;
+        }
+
+        .footer-center {
+            display: flex;
+            gap: 36px;
+            justify-self: center;
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 16px;
+            justify-self: end;
+        }
+
+        .footer-logo {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text-white);
+            text-decoration: none;
+        }
+
+        .footer-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--text-white);
+        }
+
+        .footer-social {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-social:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-white);
+            color: var(--text-white);
+            transform: translateY(-4px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .nav-content,
+            .main-content,
+            footer {
+                padding-left: 48px;
+                padding-right: 48px;
+            }
+
+            .hero {
+                padding: 80px 0 60px;
+            }
+
+            .hero h1 {
+                font-size: 60px;
+            }
+
+            .hero-description {
+                font-size: 40px;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-image-section {
+                position: relative;
+                top: 0;
+            }
+
+            .about-content,
+            .experience-item {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                padding: 60px 48px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-content,
+            .main-content,
+            footer {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .modal-content {
+                padding: 40px 24px;
+                margin: 80px auto;
+            }
+
+            footer {
+                padding: 48px 24px;
+            }
+
+            .nav-links {
+                gap: 24px;
+            }
+
+            .nav-links a {
+                font-size: 15px;
+            }
+
+            .hero {
+                padding: 60px 0 40px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+                letter-spacing: -2px;
+            }
+
+            .hero-description {
+                font-size: 24px;
+                letter-spacing: -1px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 32px;
+                margin-bottom: 80px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .project-image {
+                height: 200px;
+            }
+
+            .contact-content {
+                padding: 80px 0;
+            }
+
+            .contact-content h2 {
+                font-size: 36px;
+            }
+
+            .contact-email {
+                font-size: 24px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 32px;
+            }
+
+            .footer-left,
+            .footer-center,
+            .footer-right {
+                justify-self: center;
+            }
+
+            .footer-center {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .about-text h3 {
+                font-size: 24px;
+            }
+
+            .about-text p {
+                font-size: 16px;
+            }
+
+            .experience-date {
+                font-size: 18px;
+            }
+
+            .experience-details h4 {
+                font-size: 20px;
+            }
+
+            .experience-role,
+            .experience-description {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Grid Background -->
+    <div class="grid-bg">
+        <div class="grid-line" style="left: 10%"></div>
+        <div class="grid-line" style="left: 20%"></div>
+        <div class="grid-line" style="left: 30%"></div>
+        <div class="grid-line" style="left: 40%"></div>
+        <div class="grid-line" style="left: 50%"></div>
+        <div class="grid-line" style="left: 60%"></div>
+        <div class="grid-line" style="left: 70%"></div>
+        <div class="grid-line" style="left: 80%"></div>
+        <div class="grid-line" style="left: 90%"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo">.portfolio</a>
+            <ul class="nav-links">
+                <li><a href="#projects" class="nav-link active">projects</a></li>
+                <li><a href="#about" class="nav-link">about</a></li>
+                <li><a href="#contact" class="nav-link">contact</a></li>
+            </ul>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+        </div>
+    </nav>
+
+    <!-- Project Modal -->
+    <div class="project-modal" id="projectModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            
+            <div class="modal-grid">
+                <div class="modal-image-section">
+                    <div class="modal-image-container" onclick="document.getElementById('imageUpload').click()">
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <p>Click to upload project image</p>
+                        </div>
+                        <img id="modalImage" style="display: none;">
+                    </div>
+                </div>
+
+                <div class="modal-info">
+                    <div class="modal-header">
+                        <div class="modal-type" id="modalType">.game</div>
+                        <h2 class="modal-title" id="modalTitle">Project Title</h2>
+                        <p class="modal-description" id="modalDescription">Project description goes here</p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h3>Overview</h3>
+                        <p id="modalOverview">Detailed overview of the project, its purpose, and key features.</p>
+                    </div>
+
+                    <div class="modal-section">
+                        <h3>Key Features</h3>
+                        <ul id="modalFeatures">
+                            <li>Feature 1</li>
+                            <li>Feature 2</li>
+                            <li>Feature 3</li>
+                        </ul>
+                    </div>
+
+                    <div class="modal-section">
+                        <h3>Technologies Used</h3>
+                        <div class="modal-tags" id="modalTags">
+                            <span class="tag">Unity</span>
+                            <span class="tag">C#</span>
+                        </div>
+                    </div>
+
+                    <div class="modal-links" id="modalLinks">
+                        <a href="#" class="modal-link" target="_blank">View Project</a>
+                        <a href="#" class="modal-link secondary" target="_blank">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Projects Tab -->
+        <div id="projects" class="tab-container active">
+            <section class="hero">
+                <h1>projects</h1>
+                <p class="hero-description">a collection of games, applications, and creative experiments</p>
+            </section>
+
+            <div class="projects-grid">
+                <div class="project-card" onclick="openModal('space-shooter')">
+                    <div class="project-image">🎮</div>
+                    <div class="project-type">.game</div>
+                    <h3 class="project-title">Space Shooter</h3>
+                    <p class="project-description">A retro-style arcade shooter built with Unity and C#. Features procedural level generation and particle effects.</p>
+                </div>
+
+                <div class="project-card" onclick="openModal('puzzle-quest')">
+                    <div class="project-image">🕹️</div>
+                    <div class="project-type">.game</div>
+                    <h3 class="project-title">Puzzle Quest</h3>
+                    <p class="project-description">Mind-bending puzzle game with 50+ levels. Created using Godot Engine with custom shaders.</p>
+                </div>
+
+                <div class="project-card" onclick="openModal('design-system')">
+                    <div class="project-image">💻</div>
+                    <div class="project-type">.github</div>
+                    <h3 class="project-title">Design System</h3>
+                    <p class="project-description">Comprehensive React component library with TypeScript. Includes Storybook documentation and automated testing.</p>
+                </div>
+
+                <div class="project-card" onclick="openModal('api-framework')">
+                    <div class="project-image">🚀</div>
+                    <div class="project-type">.github</div>
+                    <h3 class="project-title">API Framework</h3>
+                    <p class="project-description">RESTful API framework built with Node.js and Express. Features JWT authentication and MongoDB integration.</p>
+                </div>
+
+                <div class="project-card" onclick="openModal('animation-library')">
+                    <div class="project-image">🎨</div>
+                    <div class="project-type">.github</div>
+                    <h3 class="project-title">Animation Library</h3>
+                    <p class="project-description">Lightweight JavaScript animation library for creating smooth, performant web animations.</p>
+                </div>
+
+                <div class="project-card" onclick="openModal('runner-infinity')">
+                    <div class="project-image">⚡</div>
+                    <div class="project-type">.game</div>
+                    <h3 class="project-title">Runner Infinity</h3>
+                    <p class="project-description">Endless runner game with dynamic difficulty scaling. Built with Phaser 3 and features online leaderboards.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Tab -->
+        <div id="about" class="tab-container">
+            <section class="hero">
+                <h1>about</h1>
+                <p class="hero-description">designer, developer, and creative problem solver</p>
+            </section>
+
+            <section class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">.experience</div>
+                    <div class="stat-value">Fresher</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">.location</div>
+                    <div class="stat-value">Navi Mumbai, India</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">.availability</div>
+                    <div class="stat-value">Open to work</div>
+                </div>
+            </section>
+
+            <section class="about-content">
+                <div class="about-image">
+                    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                </div>
+                <div class="about-text">
+                    <div class="stat-label">.hello</div>
+                    <h3>I create digital experiences that blend design with technology</h3>
+                    <p>My passion lies in building products that are both beautiful and functional. I believe in user-centered design, clean code, and the power of collaboration.</p>
+                    <p>When I'm not coding or designing, you can find me playing games, exploring new technologies, or contributing to open-source projects.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2 style="font-size: 32px; margin-bottom: 36px; font-weight: 500;">
+                    <span style="font-family: 'DM Mono'; color: var(--text-gray); font-size: 14px;">.skills & learning</span>
+                </h2>
+                
+                <div class="experience-item">
+                    <div class="experience-date">Languages</div>
+                    <div class="experience-details">
+                        <h4>Programming</h4>
+                        <div class="experience-role">Core Technologies</div>
+                        <p class="experience-description">Python, JavaScript, Java, C++, HTML/CSS. Working on strengthening problem-solving skills through DSA and competitive programming.</p>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-date">Frameworks</div>
+                    <div class="experience-details">
+                        <h4>Development Tools</h4>
+                        <div class="experience-role">Web & Game Dev</div>
+                        <p class="
