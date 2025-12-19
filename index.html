@@ -27,7 +27,7 @@
         <div class="nav-content">
             <a href="#" class="logo">.portfolio</a>
             <ul class="nav-links">
-                <li><a href="#about" class="nav-link active">about</a></li>
+                <li><a href="#about" class="nav-link">about</a></li>
                 <li><a href="#projects" class="nav-link">projects</a></li>
                 <li><a href="#contact" class="nav-link">contact</a></li>
             </ul>
@@ -100,7 +100,7 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Projects Tab -->
-        <div id="projects" class="tab-container active">
+        <div id="projects" class="tab-container">
             <section class="hero">
                 <h1>projects</h1>
                 <p class="hero-description">a collection of games, applications, and creative experiments</p>
@@ -158,7 +158,7 @@
         </div>
 
         <!-- About Tab -->
-        <div id="about" class="tab-container">
+        <div id="about" class="tab-container active">
             <section class="hero">
                 <h1>about</h1>
                 <p class="hero-description">designer, developer, and creative problem solver</p>
@@ -404,7 +404,9 @@
 
         function switchTab(tabId) {
             const currentTab = document.querySelector('.tab-container.active');
-            currentTab.style.opacity = '0';
+            if (currentTab) {
+                currentTab.style.opacity = '0';
+            }
 
             // Reset progress bar instantly when switching tabs
             progressBar.style.transition = 'transform 0.05s ease-out';
@@ -440,23 +442,45 @@
                 e.preventDefault();
                 const tabId = link.getAttribute('href').substring(1);
                 switchTab(tabId);
+                // Update URL hash
+                history.pushState(null, null, `#${tabId}`);
             });
         });
 
-        if (window.location.hash) {
-            const initialTab = window.location.hash.substring(1);
-            if (['about', 'projects', 'contact'].includes(initialTab)) {
-                switchTab(initialTab);
+        // Handle footer links
+        const footerLinks = document.querySelectorAll('.footer-link');
+        footerLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabId = link.getAttribute('href').substring(1);
+                switchTab(tabId);
+                // Update URL hash
+                history.pushState(null, null, `#${tabId}`);
+            });
+        });
+
+        // Set default tab
+        function setInitialTab() {
+            const hash = window.location.hash.substring(1);
+            const validTabs = ['about', 'projects', 'contact'];
+            
+            if (validTabs.includes(hash)) {
+                switchTab(hash);
+            } else {
+                // Default to about tab
+                switchTab('about');
+                // Update URL hash without triggering scroll
+                history.replaceState(null, null, '#about');
             }
-        } else {
-            // Default to about tab when no hash is specified
-            switchTab('about');
-            // Update URL hash without triggering scroll
-            history.replaceState(null, null, '#about');
         }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', setInitialTab);
 
         function updateProgressBar() {
             const activeTab = document.querySelector('.tab-container.active');
+            if (!activeTab) return;
+            
             const windowHeight = window.innerHeight;
             const documentHeight = activeTab.scrollHeight + activeTab.offsetTop - windowHeight;
             const scrolled = window.scrollY - activeTab.offsetTop + 92;
