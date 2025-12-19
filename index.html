@@ -44,18 +44,17 @@
 
             <div class="modal-grid">
                 <div class="modal-image-section">
-                    <div class="modal-image-container" onclick="document.getElementById('imageUpload').click()">
-                        <input type="file" id="imageUpload" accept="image/*" style="display: none;"
-                            onchange="handleImageUpload(event)">
-                        <div class="upload-placeholder" id="uploadPlaceholder">
+                    <div class="modal-image-container">
+                        <!-- Project images will be displayed here -->
+                        <img id="modalImage" src="" alt="Project Image" style="display: none;">
+                        <div class="image-placeholder" id="imagePlaceholder">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                 </path>
                             </svg>
-                            <p>Click to upload project image</p>
+                            <p>Project Image</p>
                         </div>
-                        <img id="modalImage" style="display: none;">
                     </div>
                 </div>
 
@@ -181,7 +180,7 @@
 
             <section class="about-content">
                 <div class="about-image">
-                    <div class="about-image-inner" style="background-image: url('https://github.com/HardzGuardian/HardzGuardian.github.io/blob/master/img/sagar.jpg?raw=true');"></div>
+                    <div class="about-image-inner" style="background-image: url('img/sagar.jpg');"></div>
                 </div>
                 <div class="about-text">
                     <div class="stat-label">.hello</div>
@@ -308,7 +307,8 @@
                 overview: 'Space Shooter is a fast-paced arcade game that combines classic shoot-em-up mechanics with modern procedural generation. Players navigate through increasingly difficult waves of enemies while collecting power-ups and upgrading their ship.',
                 features: ['Procedural level generation for endless replayability', 'Dynamic particle effects system', 'Multiple weapon types and power-ups', 'Boss battles with unique patterns', 'High score leaderboard system'],
                 tags: ['Unity', 'C#', 'Particle System', 'Game Design'],
-                links: [{ text: 'Play Game', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }]
+                links: [{ text: 'Play Game', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }],
+                image: 'img/space-shooter.jpg' // Add your image path here
             },
             'puzzle-quest': {
                 type: '.game',
@@ -317,7 +317,8 @@
                 overview: 'Puzzle Quest challenges players with intricate puzzles that require both logical thinking and creative problem-solving. Built with Godot Engine and featuring custom shader effects for a unique visual style.',
                 features: ['50+ handcrafted puzzle levels', 'Custom shader effects for visual feedback', 'Progressive difficulty curve', 'Hint system for challenging puzzles', 'Level editor for custom puzzles'],
                 tags: ['Godot', 'GDScript', 'Shaders', 'Puzzle Design'],
-                links: [{ text: 'Play Game', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }]
+                links: [{ text: 'Play Game', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }],
+                image: 'img/puzzle-quest.jpg' // Add your image path here
             },
             'design-system': {
                 type: '.github',
@@ -326,7 +327,8 @@
                 overview: 'A production-ready design system built with React and TypeScript. Includes a complete set of accessible, customizable components with comprehensive documentation and automated testing.',
                 features: ['Full TypeScript support', 'Storybook documentation', 'Automated testing with Jest', 'Accessibility (WCAG AA compliant)', 'Theme customization system'],
                 tags: ['React', 'TypeScript', 'Storybook', 'Jest', 'CSS'],
-                links: [{ text: 'View Docs', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }]
+                links: [{ text: 'View Docs', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }],
+                image: 'img/design-system.jpg' // Add your image path here
             },
             'api-framework': {
                 type: '.github',
@@ -335,7 +337,8 @@
                 overview: 'A robust and scalable API framework featuring JWT authentication, MongoDB integration, and comprehensive error handling. Designed for rapid development of secure backend services.',
                 features: ['JWT authentication system', 'MongoDB ODM integration', 'Rate limiting and security middleware', 'Comprehensive error handling', 'API documentation with Swagger'],
                 tags: ['Node.js', 'Express', 'MongoDB', 'JWT', 'REST API'],
-                links: [{ text: 'Documentation', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }]
+                links: [{ text: 'Documentation', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }],
+                image: 'img/api-framework.jpg' // Add your image path here
             },
             'animation-library': {
                 type: '.github',
@@ -344,7 +347,8 @@
                 overview: 'A performance-focused animation library that makes it easy to create smooth, hardware-accelerated animations. Zero dependencies and a simple, intuitive API.',
                 features: ['Zero dependencies', 'Hardware-accelerated animations', 'Simple chainable API', 'Timeline and sequence support', 'Less than 5KB gzipped'],
                 tags: ['JavaScript', 'Animation', 'Web Performance'],
-                links: [{ text: 'Documentation', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }]
+                links: [{ text: 'Documentation', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }],
+                image: 'img/animation-library.jpg' // Add your image path here
             },
             'runner-infinity': {
                 type: '.game',
@@ -353,13 +357,16 @@
                 overview: 'Runner Infinity is an endless runner game that adapts to player skill level. Built with Phaser 3, it features smooth gameplay, online leaderboards, and increasingly challenging obstacles.',
                 features: ['Dynamic difficulty scaling', 'Online leaderboards', 'Multiple character unlocks', 'Power-up system', 'Daily challenges'],
                 tags: ['Phaser 3', 'JavaScript', 'Game Design', 'WebGL'],
-                links: [{ text: 'Play Game', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }]
+                links: [{ text: 'Play Game', url: '#', primary: true }, { text: 'GitHub', url: 'https://github.com/HardzGuardian', primary: false }],
+                image: 'img/runner-infinity.jpg' // Add your image path here
             }
         };
 
         function openModal(projectId) {
             const modal = document.getElementById('projectModal');
             const data = projectData[projectId];
+            const modalImage = document.getElementById('modalImage');
+            const imagePlaceholder = document.getElementById('imagePlaceholder');
 
             if (data) {
                 document.getElementById('modalType').textContent = data.type;
@@ -371,8 +378,17 @@
                 document.getElementById('modalLinks').innerHTML = data.links.map(l =>
                     `<a href="${l.url}" class="modal-link ${l.primary ? '' : 'secondary'}" target="_blank">${l.text}</a>`
                 ).join('');
-                document.getElementById('modalImage').style.display = 'none';
-                document.getElementById('uploadPlaceholder').style.display = 'block';
+                
+                // Set project image if available
+                if (data.image) {
+                    modalImage.src = data.image;
+                    modalImage.style.display = 'block';
+                    modalImage.alt = `${data.title} Project Image`;
+                    imagePlaceholder.style.display = 'none';
+                } else {
+                    modalImage.style.display = 'none';
+                    imagePlaceholder.style.display = 'flex';
+                }
             }
 
             modal.classList.add('active');
@@ -382,20 +398,6 @@
         function closeModal() {
             document.getElementById('projectModal').classList.remove('active');
             document.body.style.overflow = '';
-        }
-
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const img = document.getElementById('modalImage');
-                    img.src = e.target.result;
-                    img.style.display = 'block';
-                    document.getElementById('uploadPlaceholder').style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
         }
 
         const navLinks = document.querySelectorAll('.nav-link');
