@@ -306,10 +306,10 @@ body.loading {
         <div class="controls-sep"></div>
         
         <div class="date-group">
-        <div class="date-error" id="date-error">No matching movie found</div>
-        <input type="text" id="titleSearch" placeholder="Movie title" maxlength="60"
+        <div class="date-error" id="date-error">No matching TV show found</div>
+        <input type="text" id="titleSearch" placeholder="TV show title" maxlength="60"
             onkeydown="if(event.key==='Enter'){ event.preventDefault(); scrollToMovie(); }">
-        <button class="go-btn" onclick="scrollToMovie()" title="Jump to matching movie">GO</button>
+        <button class="go-btn" onclick="scrollToMovie()" title="Jump to matching TV show">GO</button>
         </div>
         
         <div class="controls-sep"></div>
@@ -323,7 +323,7 @@ body.loading {
         
         <div class="controls-sep"></div>
         
-        <button id="toggle-date-field" class="ui-btn active" onclick="toggleDateField()" title="Sort by movie release date">
+        <button id="toggle-date-field" class="ui-btn active" onclick="toggleDateField()" title="Sort by TV show release date">
             <i class="ti ti-calendar" aria-hidden="true"></i> Release Date
         </button>
         <button id="toggle-date-field-alt" class="ui-btn" onclick="toggleDateField()" title="Sort by recently added">
@@ -737,6 +737,11 @@ layoutMasonryBtn.addEventListener('click', () => setLayout('masonry'));
 		let itemWidth = 190;
 		let itemHeight = 310;
 		let gap = 10;
+		const YEAR_HEADER_HEIGHT = 56;
+		function getItemYear(item) {
+			if (!item.release) return "Unknown";
+			return new Date(item.release * 1000).getUTCFullYear();
+		}
 		window.timelineMap = null;
 		let isDraggingTimeline = false;
 		let dragStartY = 0;
@@ -1080,6 +1085,23 @@ layoutMasonryBtn.addEventListener('click', () => setLayout('masonry'));
 			}
 		}
 
+		function renderYearHeaders() {
+			const gallery = document.querySelector('.gallery');
+			gallery.querySelectorAll('.year-header').forEach(el => el.remove());
+			const headers = window.yearHeaders;
+			if (!headers || !headers.length) return;
+			const frag = document.createDocumentFragment();
+			headers.forEach(h => {
+				const el = document.createElement('div');
+				el.className = 'year-header';
+				el.style.setProperty('--y', `${h.y}px`);
+				el.innerHTML = `<span class="year-header-label">${h.year}</span><span class="year-header-line"></span>`;
+				frag.appendChild(el);
+			});
+			gallery.appendChild(frag);
+		}
+		window.renderYearHeaders = renderYearHeaders;
+
 		function computeMasonryPositions() {
 			allItems = window.allItems
 			const gallery = document.querySelector('.gallery');
@@ -1096,12 +1118,25 @@ layoutMasonryBtn.addEventListener('click', () => setLayout('masonry'));
 			const extraPerColumn = leftover / columns;
 			const columnWidth = minWidth + extraPerColumn;
 			const colHeights = new Array(columns).fill(0);
+			const groupByYear = window.sortField === "date";
+			const headerHeight = YEAR_HEADER_HEIGHT;
+			let currentYear = null;
+			window.yearHeaders = [];
 			for (const item of allItems) {
+				if (groupByYear) {
+					const year = getItemYear(item);
+					if (year !== currentYear) {
+						const headerY = Math.max(...colHeights);
+						window.yearHeaders.push({ year, y: headerY });
+						for (let c = 0; c < columns; c++) colHeights[c] = headerY + headerHeight;
+						currentYear = year;
+					}
+				}
 				const w = item.width;
 				const h = item.height;
 				if (!w || !h) {
 					item.x = 0;
-					item.y = 0;
+					item.y = colHeights[0] || 0;
 					continue;
 				}
 				const displayHeight = (h / w) * columnWidth;
@@ -1164,14 +1199,45 @@ layoutMasonryBtn.addEventListener('click', () => setLayout('masonry'));
 			const extraPerColumn = leftover / columns;
 			const itemWidth = minWidth + extraPerColumn;
 			document.documentElement.style.setProperty('--item-width', `${itemWidth}px`);
-			allItems.forEach((item, i) => {
-				const row = Math.floor(i / columns);
-				const col = i % columns;
-				item.y = row * itemHeight;
-				item.x = col * (itemWidth + gap);
-			});
-			const totalRows = Math.ceil(allItems.length / columns);
-			const totalHeight = totalRows * itemHeight;
+			let totalHeight;
+			if (window.sortField === "date") {
+				const headerHeight = YEAR_HEADER_HEIGHT;
+				let y = 0;
+				let col = 0;
+				let currentYear = null;
+				window.yearHeaders = [];
+				allItems.forEach((item) => {
+					const year = getItemYear(item);
+					if (year !== currentYear) {
+						if (currentYear !== null && col !== 0) {
+							y += itemHeight;
+							col = 0;
+						}
+						window.yearHeaders.push({ year, y });
+						y += headerHeight;
+						currentYear = year;
+					}
+					item.y = y;
+					item.x = col * (itemWidth + gap);
+					col++;
+					if (col >= columns) {
+						col = 0;
+						y += itemHeight;
+					}
+				});
+				if (col !== 0) y += itemHeight;
+				totalHeight = y;
+			} else {
+				window.yearHeaders = [];
+				allItems.forEach((item, i) => {
+					const row = Math.floor(i / columns);
+					const col = i % columns;
+					item.y = row * itemHeight;
+					item.x = col * (itemWidth + gap);
+				});
+				const totalRows = Math.ceil(allItems.length / columns);
+				totalHeight = totalRows * itemHeight;
+			}
 			computeVirtualPositions.columns = columns;
 			computeVirtualPositions.totalHeight = totalHeight;
 		}
@@ -1188,6 +1254,7 @@ layoutMasonryBtn.addEventListener('click', () => setLayout('masonry'));
 				spacer.style.height = computeVirtualPositions.totalHeight + "px";
 				updateRenderedPositions();
 				renderVisibleItems();
+				renderYearHeaders();
 				updateTimelineBar();
 			}, 120);
 		});
@@ -1211,6 +1278,7 @@ const totalItems = meta.length;
     computeVirtualPositions();
     const spacer = document.getElementById("spacer");
     if (spacer) spacer.style.height = computeVirtualPositions.totalHeight + "px";
+    renderYearHeaders();
     const gallery = document.querySelector('.gallery');
     const firstN = meta.slice(0, EARLY_RENDER_COUNT);
     firstN.forEach(it => {
@@ -1631,6 +1699,7 @@ function rerenderVirtualized() {
 	const spacer = document.getElementById("spacer");
 	if (spacer) spacer.style.height = computeVirtualPositions.totalHeight + "px";
 	renderVisibleItems();
+	renderYearHeaders();
 	updateTimelineBar();
 }
 window.rerenderVirtualized = function() {

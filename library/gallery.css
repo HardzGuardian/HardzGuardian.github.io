@@ -591,6 +591,36 @@ h1 {
   position: absolute;
 }
 
+.year-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 56px;
+  box-sizing: border-box;
+  transform: translateY(var(--y));
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 4px;
+  pointer-events: none;
+}
+
+.year-header-label {
+  font-family: "DM Mono", monospace;
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+.year-header-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border-strong);
+}
+
 .grid-layout .item {
   width: var(--item-width);
   height: 310px;
