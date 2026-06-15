@@ -169,17 +169,13 @@ body.loading {
     </p>
 
     <p>
-      Enjoy browsing! 
-      <a href="https://linktr.ee/teppil" class="pink-heart" target="_blank" rel="noopener noreferrer">♡</a>
+      Enjoy browsing!
+      <a href="https://github.com/HardzGuardian" class="pink-heart" target="_blank" rel="noopener noreferrer">♡</a>
     </p>
 
     <div class="feedback-note">
-      If you’d like to help sort photos, report issues, or suggest improvements, message me on 
-      <span id="discordText" class="discord-tooltip-wrapper">
-        Discord
-        <span class="discord-tooltip">@terril</span>
-        <span id="copyMessage">Copied!</span>
-      </span>.
+      If you’d like to help sort photos, report issues, or suggest improvements, message me on
+      <a href="https://discord.gg/3YXTX7vh" target="_blank" rel="noopener noreferrer">Discord</a>.
       <br>
       Layout may not display well on mobile.
     </div>
@@ -285,20 +281,6 @@ if (button) {
 </script>
 </div>
 </div>
-<script>
-    const discordText = document.getElementById('discordText');
-  const copyMessage = document.getElementById('copyMessage');
-  const discordUsername = '@terril';
-
-  discordText.addEventListener('click', () => {
-    navigator.clipboard.writeText(discordUsername).then(() => {
-      copyMessage.classList.add('show');
-      setTimeout(() => {
-        copyMessage.classList.remove('show');
-      }, 1500);
-    });
-  });
-</script>
 </div>
 </div>
 <script src="library-data.js"></script>
