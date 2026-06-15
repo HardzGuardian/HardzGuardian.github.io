@@ -2166,7 +2166,7 @@ html.dark .mid-message {
   top: 225px;
   bottom: 20px;
   width: 1px;
-  background: var(--border-strong);
+  background: transparent;
   border-radius: 0;
   pointer-events: auto;
   opacity: 0;
@@ -2187,45 +2187,6 @@ html.dark .mid-message {
   filter: blur(3px);
   transform: translateX(10px);
   pointer-events: none;
-}
-
-/* #timeline-bar:has(.timeline-marker:hover) {
-  background: var(--gold);
-} */
-
-.timeline-marker {
-  position: absolute;
-  width: 5px;
-  height: 1px;
-  background: var(--text-secondary);
-  transform: translateX(-50%);
-  opacity: 1;
-  left: 50%;
-  /* border-radius: 50%; */
-  transition: background 0.5s ease-out, filter 1s ease-out;
-}
-
-.timeline-marker:hover {
-  background: var(--gold);
-  filter: brightness(2);
-}
-
-.timeline-marker:hover::before {
-  background: rgba(255, 215, 0, 0.05);
-  border-radius: 50%;
-}
-
-.timeline-marker::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 14px;
-  height: 14px;
-  transform: translate(-50%, -50%);
-  transition: background 0.5s ease, transform 0.3s ease-out;
-  background: transparent;
-  border-radius: 50%;
 }
 
 #timeline-current {
@@ -2261,34 +2222,18 @@ html.dark .mid-message {
   background: transparent;
 }
 
-.timeline-year {
+.timeline-current-year {
   position: absolute;
   left: 50%;
   transform: translateX(-135%) translateY(-45%);
   font-size: 9px;
   font-weight: 500;
   color: var(--gold);
-  pointer-events: auto;
+  pointer-events: none;
   user-select: none;
   white-space: nowrap;
   font-family: "DM Mono", monospace;
   letter-spacing: 0.15em;
-  transition: filter 0.5s ease-out;
-}
-
-.timeline-year:hover {
-  filter: brightness(2);
-}
-
-.timeline-year::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  width: 4px;
-  height: 1px;
-  background: var(--gold);
-  transform: translateY(-50%);
 }
 
 .topbar-auth {

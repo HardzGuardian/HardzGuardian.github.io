@@ -287,6 +287,7 @@ body.loading {
 
   <div id="timeline-bar">
     <div id="timeline-current"></div>
+    <div id="timeline-current-year" class="timeline-current-year"></div>
   </div>
   <div id="scroll-container">
     <div class="header-section">
@@ -539,20 +540,16 @@ body.loading {
               <div class="lb-section">
                 <div class="lb-row">
                   <span class="lb-row-label">Status</span>
-                  <span class="lb-row-value">Plan</span>
+                  <span class="lb-row-value" id="lbStatus">Plan</span>
                 </div>
                 <div class="lb-row">
                   <span class="lb-row-label">Genres</span>
-                  <span class="lb-row-value">Sci-Fi</span>
+                  <span class="lb-row-value" id="lbGenres">Sci-Fi</span>
                 </div>
                 <div class="lb-row">
                   <span class="lb-row-label">Notes</span>
                   <span class="lb-row-value">Recommended by a friend.</span>
                 </div>
-              </div>
-              <div class="lb-section">
-                <div class="lb-row-label" style="margin-bottom:5px;">Description</div>
-                <div class="lb-row-value" style="white-space:normal; line-height:1.4;">A lone astronaut wakes up with no memory on a desperate mission to save Earth.</div>
               </div>
             </div>
           </div>
@@ -810,96 +807,38 @@ layoutMasonryBtn.addEventListener('click', () => setLayout('masonry'));
 			executeScripts(container);
 		}
 
+		const currentYearEl = document.getElementById("timeline-current-year");
+
+		function getItemAtScrollTop(scrollTop) {
+			const items = window.allItems;
+			if (!items || !items.length) return null;
+			let lo = 0, hi = items.length - 1, ans = items.length - 1;
+			while (lo <= hi) {
+				const mid = (lo + hi) >> 1;
+				if (items[mid].y >= scrollTop) { ans = mid; hi = mid - 1; }
+				else lo = mid + 1;
+			}
+			return items[ans];
+		}
+
 		function updateTimelineCurrentPosition() {
 			const scrollTop = scroller.scrollTop;
 			const totalHeight = computeVirtualPositions.totalHeight;
 			const scrollbarHeight = scrollbarEl.clientHeight;
 			const currentY = (scrollTop / totalHeight) * scrollbarHeight;
 			currentEl.style.top = `${currentY}px`;
+			if (currentYearEl) {
+				const item = getItemAtScrollTop(scrollTop);
+				currentYearEl.textContent = (item && typeof item.release === "number") ? new Date(item.release * 1000).getFullYear() : "";
+				currentYearEl.style.top = `${currentY}px`;
+			}
 		}
 		scroller.addEventListener('scroll', updateTimelineCurrentPosition);
 
-		function getYearAnchorEntry(months) {
-			let best = null;
-			for (const month in months) {
-				const entry = months[month];
-				if (!best || entry.firstTimestamp < best.firstTimestamp) {
-					best = entry;
-				}
-			}
-			return best;
-		}
-
 		function renderTimelineMarkers() {
 			const bar = document.getElementById("timeline-bar");
-			if (!bar || !window.timelineMap) return;
+			if (!bar) return;
 			bar.querySelectorAll('.timeline-marker, .timeline-year').forEach(el => el.remove());
-			const barHeight = bar.clientHeight;
-			const reverse = window.ascending;
-			for (const year in timelineMap) {
-				const yearEntry = getYearAnchorEntry(timelineMap[year]);
-				if (yearEntry && typeof yearEntry.scrollY === "number") {
-					let y = yearEntry.scrollY;
-					if (reverse) y = barHeight - y;
-					const label = document.createElement("div");
-					label.className = "timeline-year";
-					label.textContent = year;
-					label.style.top = `${y}px`;
-					label.addEventListener("click", (e) => {
-						e.stopPropagation();
-						scrollToYear(year);
-					});
-					bar.appendChild(label);
-				}
-				for (const month in timelineMap[year]) {
-					const entry = timelineMap[year][month];
-					if (typeof entry.scrollY !== "number") continue;
-					let y = entry.scrollY;
-					if (reverse) y = barHeight - y;
-					const marker = document.createElement("div");
-					marker.className = "timeline-marker";
-					marker.style.top = `${y}px`;
-					marker.addEventListener("click", (e) => {
-						e.stopPropagation();
-						scrollToMonth(year, month);
-					});
-					bar.appendChild(marker);
-				}
-			}
-		}
-
-		function scrollToYear(year) {
-			const entry = getYearAnchorEntry(timelineMap[year]);
-			if (!entry) return;
-			const index = entry.firstArrayIndex;
-			const item = allItems[index];
-			if (!item) return;
-			let targetY = item.y;
-			if (window.ascending) {
-				const total = computeVirtualPositions.totalHeight;
-				targetY = total - targetY;
-			}
-			document.querySelector('.all').scrollTo({
-				top: targetY,
-				behavior: "instant"
-			});
-		}
-
-		function scrollToMonth(year, month) {
-			const entry = timelineMap[year][month];
-			if (!entry) return;
-			const index = entry.firstArrayIndex;
-			const item = allItems[index];
-			if (!item) return;
-			let targetY = item.y;
-			if (window.ascending) {
-				const total = computeVirtualPositions.totalHeight;
-				targetY = total - targetY;
-			}
-			document.querySelector('.all').scrollTo({
-				top: targetY,
-				behavior: "instant"
-			});
 		}
 		const scrollbarHeight = scrollbarEl.clientHeight;
 
@@ -938,8 +877,8 @@ layoutMasonryBtn.addEventListener('click', () => setLayout('masonry'));
 		}
 
 		function getItemTimelineDate(item) {
-			if (!item.date) return null;
-			const d = new Date(item.date * 1000);
+			if (!item.release) return null;
+			const d = new Date(item.release * 1000);
 			return {
 				year: d.getFullYear(),
 				month: d.getMonth() + 1,
@@ -1197,6 +1136,7 @@ layoutMasonryBtn.addEventListener('click', () => setLayout('masonry'));
 			}
 			scrollbarEl.classList.remove("hidden");
 			const scrollbarHeight = scrollbarEl.clientHeight;
+			window.timelineMap = buildTimelineMap();
 			updateTimelineYPositions();
 			normalizeTimelinePositions(scrollbarHeight);
 			renderTimelineMarkers();
@@ -1262,7 +1202,10 @@ function buildAllItemsChunked(onComplete, bar, progressEl) {
     const meta = buildAllItemsMetadata();
     allItems = meta;
     window.allItems = allItems;
-    const totalItems = meta.length;
+    const initialField = (window.sortField === "date") ? "release" : "uploaded";
+    sortItems(window.ascending, initialField);
+    allItems = window.allItems;
+const totalItems = meta.length;
     const EARLY_RENDER_COUNT = 60;
 
     computeVirtualPositions();
@@ -1629,6 +1572,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         normalizeTimelinePositions(scrollbarHeight);
         renderTimelineMarkers();
+        updateTimelineCurrentPosition();
 
         const spacer = document.getElementById("spacer");
         spacer.style.height = computeVirtualPositions.totalHeight + "px";
@@ -2054,7 +1998,11 @@ window.openLightbox = function(idx) {
 	} else {
 		lbReleaseDate.textContent = '–';
 	}
-	loadSharedImage(meta.full).then(preload => {
+		const lbStatusEl = document.getElementById('lbStatus');
+	const lbGenresEl = document.getElementById('lbGenres');
+	if (lbStatusEl) lbStatusEl.textContent = meta.raw?.status || '–';
+	if (lbGenresEl) lbGenresEl.textContent = (meta.raw?.genres && meta.raw.genres.length) ? meta.raw.genres.join(', ') : '–';
+loadSharedImage(meta.full).then(preload => {
 		const width = preload.naturalWidth;
 		const height = preload.naturalHeight;
 		lbLens.dataset.naturalWidth = width;
