@@ -175,7 +175,11 @@ body.loading {
 
     <div class="feedback-note">
       If you’d like to help sort photos, report issues, or suggest improvements, message me on
-      <a href="https://discord.gg/3YXTX7vh" target="_blank" rel="noopener noreferrer">Discord</a>.
+      <span id="discordText" class="discord-tooltip-wrapper">
+        Discord
+        <span class="discord-tooltip">@hardzguardian</span>
+        <span id="copyMessage">Copied!</span>
+      </span>.
       <br>
       Layout may not display well on mobile.
     </div>
@@ -283,6 +287,20 @@ if (button) {
 </div>
 </div>
 </div>
+<script>
+  const discordText = document.getElementById('discordText');
+  const copyMessage = document.getElementById('copyMessage');
+  const discordUsername = '@hardzguardian';
+
+  discordText.addEventListener('click', () => {
+    navigator.clipboard.writeText(discordUsername).then(() => {
+      copyMessage.classList.add('show');
+      setTimeout(() => {
+        copyMessage.classList.remove('show');
+      }, 1500);
+    });
+  });
+</script>
 <script src="library-data.js"></script>
 <script>
   const RECENT_CATEGORY_PATHS = {
