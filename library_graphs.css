@@ -1,0 +1,75 @@
+/* ===== Shared library activity graph styles ===== */
+
+.graph-header {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold, #d4af37);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.graph-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border, #2a2a2a);
+}
+
+.graph-panel {
+  position: relative;
+  border: 0.5px solid var(--border, #2a2a2a);
+  background: var(--bg-surface, #161616);
+  margin-bottom: 16px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.graph-panel-title {
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #ccc);
+  margin-bottom: 4px;
+}
+
+.graph-panel-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  color: var(--text-secondary, #999);
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+
+.graph-panel-legend .swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+.graph-panel svg {
+  display: block;
+  width: 100%;
+}
+
+.graph-panel-axis-label {
+  font-size: 6px;
+  fill: var(--text-secondary, #777);
+  font-family: 'DM Mono', monospace;
+}
+
+.graph-grid-line {
+  stroke: var(--border, #2a2a2a);
+  stroke-width: 0.5;
+}

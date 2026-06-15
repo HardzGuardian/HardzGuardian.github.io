@@ -1,0 +1,3057 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+ 
+
+
+<meta name="viewport" id="viewport-meta" content="width=device-width, initial-scale=0.7, minimum-scale=0.5">   
+
+<script>
+  (function() {
+    const w = window.screen.width;
+    const meta = document.getElementById('viewport-meta');
+    if (w >= 768 && w <= 1024) {
+      // iPad
+      meta.content = "width=device-width, initial-scale=0.7, minimum-scale=0.5";
+    } else if (w < 768) {
+      // Phone
+      meta.content = "width=device-width, initial-scale=0.5, minimum-scale=0.3";
+    }
+  })();
+</script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">    
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">    
+<script src="gallery-lens.js"></script>
+<script>
+  const saved = localStorage.getItem('theme');
+  const isDark = saved === 'dark' || saved === null;
+
+  if (isDark) {
+    document.documentElement.classList.add('dark');
+  }
+
+  window.initialThemeText = isDark ? "Dark" : "Light";
+</script>
+    <script>
+      try {
+        let theme = localStorage.getItem('theme');
+        if (!theme) {
+          theme = 'dark';
+          localStorage.setItem('theme', theme);
+        }
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      } catch (e) {}
+      try {
+        const savedStates = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key.startsWith("folder-")) {
+            savedStates[key] = localStorage.getItem(key);
+          }
+        }
+        const css = Object.entries(savedStates).map(([key, val]) => {
+          const group = key.replace("folder-", "");
+          const display = val === "open" ? "block" : "none";
+          return `.member-list[data-folder="${group}"] { display: ${display} !important; }`;
+        }).join("\n");
+        if (css) {
+          const style = document.createElement('style');
+          style.innerHTML = css;
+          document.head.appendChild(style);
+        }
+      } catch (e) {}
+    </script>
+    <meta charset="UTF-8" />
+    <title>Tools — Library</title>
+  </head>
+  <body>
+<div id="page-loader">
+  <div id="loader-logo">t<span>/ archive</span></div>
+</div>
+
+<style>
+html.loading,
+body.loading {
+    overflow: hidden;
+}
+#page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    min-height: -webkit-fill-available;
+    background: var(--bg-deep, #0d0c0b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2147483647;
+    transition: opacity 0.3s ease;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+  #page-loader.dismissing {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #loader-logo {
+    font-family: monospace;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    color: var(--gold, #c9b97a);
+  }
+
+  #loader-logo span {
+    font-style: normal;
+    font-family: sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-secondary, #5a5650);
+    margin-left: 8px;
+  }
+
+  #titleSearch {
+    width: 130px;
+    height: 26px;
+    padding: 0 8px;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    border: 0.5px solid var(--border-strong);
+    border-radius: 2px;
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    outline: none;
+    transition: border-color 0.15s;
+    box-shadow: none !important;
+  }
+
+  #titleSearch::placeholder {
+    color: var(--text-muted);
+  }
+
+  #titleSearch:focus {
+    border-color: var(--gold-border);
+  }
+</style>
+<link rel="stylesheet" href="gallery.css?v=20343334333143333343000">
+<div id="topbar-container"></div>
+<div id="lib-filter-panel" class="filter-panel hidden">
+  <div class="filter-content">
+    <div class="fp-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+      <div class="fp-title" style="font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-primary);">
+        <i class="ti ti-adjustments-horizontal"></i> Filters
+      </div>
+      <button id="lib-fp-close" class="fp-close" aria-label="Close filters" style="background:none; border:none; color:#aaa; cursor:pointer;">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <div class="fp-row">
+      <div class="fp-label-row">
+        <i class="ti ti-movie fp-label-icon"></i>
+        <span class="fp-label">Status</span>
+        <button class="fp-reset-field" data-field="status" title="Reset status">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <div class="fp-toggles" id="lib-fp-status">
+        <button class="fp-toggle" data-value="Completed">Completed</button>
+        <button class="fp-toggle" data-value="Watching">Watching</button>
+        <button class="fp-toggle" data-value="Plan to Watch">Plan to Watch</button>
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+    <div class="fp-row">
+      <div class="fp-label-row">
+        <i class="ti ti-tags fp-label-icon"></i>
+        <span class="fp-label">Genre</span>
+        <button class="fp-reset-field" data-field="genre" title="Reset genre">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <div class="fp-toggles" id="lib-fp-genre" style="flex-wrap: wrap;">
+        <!-- Filled dynamically from library.js based on available genres -->
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+    <div class="fp-row">
+      <div class="fp-label-row">
+        <i class="ti ti-star fp-label-icon"></i>
+        <span class="fp-label">Rating</span>
+        <span class="fp-range-readout" id="fp-rating-readout">–</span>
+        <button class="fp-reset-field" data-field="rating" title="Reset rating">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <div class="fp-dual-slider" id="fp-rating-slider">
+        <div class="fp-track">
+          <div class="fp-track-fill" id="fp-rating-fill"></div>
+        </div>
+        <input type="range" class="fp-range fp-range-lo" id="fp-rating-lo" min="0" max="10" step="0.5" value="0">
+        <input type="range" class="fp-range fp-range-hi" id="fp-rating-hi" min="0" max="10" step="0.5" value="10">
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+    <div class="fp-footer">
+      <button id="lib-fp-reset-all" class="fp-reset-all-btn">
+        <i class="ti ti-refresh"></i> Reset all filters </button>
+    </div>
+  </div>
+</div>
+<div class="real-all">
+  
+  <div id="scrollToTop" aria-label="Scroll to top">
+    <svg viewBox="0 0 40 40" width="800" height="800" fill-rule="nonzero" fill="#000000" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 12l6 5.656-1.5 1.414-3.44-3.242V28h-2.12V15.828L15.5 19.07 14 17.656z"/>
+    </svg>
+  </div>
+<div class="sidebar-container" style="display: flex; align-items: flex-start; gap: 6px;">
+    
+<div class="sidebar">
+  <div class="searchandbuttons">
+    <div class="buttons">
+      <a href="../index.html" class="home-icon-link" title="Home">
+        <svg width="22" height="22" viewBox="0 0 24 24">
+          <path d="M 12 2.0996094 L 1 12 L 4 12 L 4 21 L 10 21 L 10 14 L 14 14 L 14 21 L 20 21 L 20 12 L 23 12 L 12 2.0996094 z"/>
+        </svg>
+      </a>
+      <a href="../volume_tree.html" class="stats-icon" title="Volume Tree">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+          <path d="M1.75 13.25V1.5H.5v12a1.24 1.24 0 0 0 1.22 1H15.5v-1.25z"/>
+          <path d="M3.15 8H4.4v3.9H3.15zm3.26-4h1.26v7.9H6.41zm3.27 2h1.25v5.9H9.68zm3.27-3.5h1.25v9.4h-1.25z"/>
+        </svg>
+      </a>
+      <button id="toggle-darkmode" class="icon-button" aria-label="Toggle dark/light mode" title="Toggle Dark Mode" onclick="toggleDarkMode()">
+        <svg id="sunmoon" viewBox="0 0 32 32">
+          <defs>
+            <mask id="maskc">
+              <rect x="0" y="0" width="32" height="32" fill="white"/>
+              <circle id="mask-center" cx="40" cy="16" r="8" fill="black"/>
+            </mask>
+            <mask id="maskr">
+              <circle id="mask-rays" cx="16" cy="16" r="16" fill="white"/>
+            </mask>
+          </defs>
+          <circle id="center" mask="url(#maskc)" r="8" cx="16" cy="16"/>
+          <path id="rays" mask="url(#maskr)" d="M6,16l-6,0 M8.929,8.929l-4.243,-4.243 M8.929,23.071l-4.243,4.243 M16,26l-0,6 M27.314,27.314l-4.243,-4.243 M32,16l-6,0 M27.314,4.686l-4.243,4.243 M16,-0l-0,6"/>
+        </svg>
+      </button>
+    </div>
+
+    <hr>
+    <div class="search-container">
+      <input type="text" id="sidebarSearch" placeholder="Search..." />
+    </div>
+    <hr>
+
+    <div class="sidebar-scroll">
+      <div id="toggle-sidebar" class="icon-button" aria-label="Collapse or expand all folders" title="Collapse/Expand All">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"/>
+        </svg>
+      </div>
+      <ul class="folder-tree">
+        <li>
+          <button class="folder-toggle" data-folder="LIBRARY">LIBRARY</button>
+          <ul class="member-list" data-folder="LIBRARY" data-initialized style="display: none;">
+            <li><a href="movies.html">Movies</a></li>
+            <li><a href="tv-shows.html">TV Shows</a></li>
+            <li><a href="anime.html">Anime</a></li>
+            <li><a href="manga.html">Manga</a></li>
+            <li><a href="novel.html">Novel</a></li>
+            <li><a href="book.html">Book</a></li>
+            <li><a href="tools.html" class="current-member">Tools</a></li>
+          </ul>
+        </li>
+
+      </ul>
+    </div> <!-- .sidebar-scroll -->
+  </div> <!-- .searchandbuttons -->
+</div> <!-- .sidebar -->
+</div> <!-- .sidebar-container -->
+
+
+  <div id="timeline-bar">
+    <div id="timeline-current"></div>
+  </div>
+  <div id="scroll-container">
+    <div class="header-section">
+      <div class="header1">
+        <div class="image-count">Total Entries: 1</div>
+        <h1 class="windows98-title">Tools
+
+        </h1>
+
+    <div id="controls">
+        
+        <button id="randomBtn" class="ui-btn icon-only" title="Open a random image">
+            <i class="ti ti-dice-3" aria-hidden="true"></i>
+        </button>
+        
+        <div class="controls-sep"></div>
+        
+        <div class="date-group">
+        <div class="date-error" id="date-error">No matching movie found</div>
+        <input type="text" id="titleSearch" placeholder="Movie title" maxlength="60"
+            onkeydown="if(event.key==='Enter'){ event.preventDefault(); scrollToMovie(); }">
+        <button class="go-btn" onclick="scrollToMovie()" title="Jump to matching movie">GO</button>
+        </div>
+        
+        <div class="controls-sep"></div>
+        
+        <button class="ui-btn active" onclick="toggleSortOrder()" title="Sort descending" data-sort="desc">
+            <i class="ti ti-sort-descending" aria-hidden="true"></i> Desc
+        </button>
+        <button class="ui-btn" onclick="toggleSortOrder()" title="Sort ascending" data-sort="asc">
+            <i class="ti ti-sort-ascending" aria-hidden="true"></i> Asc
+        </button>
+        
+        <div class="controls-sep"></div>
+        
+        <button id="toggle-date-field" class="ui-btn active" onclick="toggleDateField()" title="Sort by movie release date">
+            <i class="ti ti-calendar" aria-hidden="true"></i> Release Date
+        </button>
+        <button id="toggle-date-field-alt" class="ui-btn" onclick="toggleDateField()" title="Sort by recently added">
+            <i class="ti ti-clock" aria-hidden="true"></i> Recently Added
+        </button>
+        
+        <div class="controls-sep"></div>
+        
+        <button id="layout-grid" class="ui-btn active" title="Grid layout">
+            <i class="ti ti-layout-grid" aria-hidden="true"></i> Grid
+        </button>
+        <button id="layout-masonry" class="ui-btn" title="Masonry layout">
+            <i class="ti ti-layout-board-split" aria-hidden="true"></i> Masonry
+        </button>
+        <div class="controls-sep"></div>
+        <button id="filterBtn" class="ui-btn icon-only" title="Filter gallery">
+            <i class="ti ti-adjustments-horizontal" aria-hidden="true"></i>
+            <span id="filter-badge" class="filter-badge hidden"></span>
+        </button>
+            <div id="filter-nudge" class="filter-nudge visible">
+                <i class="ti ti-sparkles"></i>
+                Try the new filters!
+            </div>        
+        </div>
+
+      </div>
+      <div class="header2" id="settings-box">
+        <div>
+          <strong>Sort:</strong> Descending
+        </div>
+        <div>
+          <strong>Order:</strong> Release Date
+        </div>
+        <div>
+          <strong>Layout:</strong> Grid
+        </div>
+        <div>
+          <strong>Theme:</strong>
+          <span id="theme-text">
+            <script>
+              document.write(window.initialThemeText)
+            </script>
+          </span>
+        </div>
+      </div>
+    </div>
+<div id="filterPanel" class="filter-panel hidden">
+  <div class="filter-content">
+    <div class="scroll-chevron scroll-chevron-top">
+      <i class="ti ti-chevron-up scroll-chevron-icon" aria-hidden="true"></i>
+    </div>
+    <div class="fp-row">
+      <div class="fp-label-row">
+        <i class="ti ti-layout-rows fp-label-icon"></i>
+        <span class="fp-label">Orientation</span>
+        <button class="fp-reset-field" data-field="orientation" title="Reset orientation">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <div class="fp-toggles" id="fp-orientation">
+        <button class="fp-toggle" data-value="portrait">Portrait</button>
+        <button class="fp-toggle" data-value="landscape">Landscape</button>
+        <button class="fp-toggle" data-value="square">Square</button>
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+    <div class="fp-row">
+      <div class="fp-label-row">
+        <i class="ti ti-calendar-check fp-label-icon"></i>
+        <span class="fp-label">Assignment</span>
+        <button class="fp-reset-field" data-field="assigned" title="Reset assignment">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <div class="fp-toggles" id="fp-assigned">
+        <button class="fp-toggle" data-value="assigned">Assigned</button>
+        <button class="fp-toggle" data-value="unassigned">Unassigned</button>
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+    <div class="fp-row">
+      <div class="fp-label-row">
+        <i class="ti ti-calendar fp-label-icon"></i>
+        <span class="fp-label">Date range</span>
+        <button class="fp-reset-field" data-field="date" title="Reset date range">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <div class="fp-date-readout-wrap">
+        <div class="fp-date-readout-col">
+          <span class="fp-date-readable" id="fp-date-lo-readable">–</span>
+          <span class="fp-date-yymmdd" id="fp-date-lo-yymmdd"></span>
+        </div>
+        <span class="fp-date-sep">→</span>
+        <div class="fp-date-readout-col">
+          <span class="fp-date-readable" id="fp-date-hi-readable">–</span>
+          <span class="fp-date-yymmdd" id="fp-date-hi-yymmdd"></span>
+        </div>
+      </div>
+      <div class="fp-dual-slider" id="fp-date-slider">
+        <div class="fp-track">
+          <div class="fp-track-fill" id="fp-date-fill"></div>
+        </div>
+        <input type="range" class="fp-range fp-range-lo" id="fp-date-lo" min="0" max="100" value="0">
+        <input type="range" class="fp-range fp-range-hi" id="fp-date-hi" min="0" max="100" value="100">
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+    <div class="fp-row">
+      <div class="fp-label-row">
+        <i class="ti ti-file fp-label-icon"></i>
+        <span class="fp-label">File size</span>
+        <span class="fp-range-readout" id="fp-size-readout">–</span>
+        <button class="fp-reset-field" data-field="size" title="Reset file size">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <div class="fp-dual-slider" id="fp-size-slider">
+        <div class="fp-track">
+          <div class="fp-track-fill" id="fp-size-fill"></div>
+        </div>
+        <input type="range" class="fp-range fp-range-lo" id="fp-size-lo" min="0" max="100" value="0">
+        <input type="range" class="fp-range fp-range-hi" id="fp-size-hi" min="0" max="100" value="100">
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+    <div class="fp-row">
+      <div class="fp-label-row">
+        <i class="ti ti-aspect-ratio fp-label-icon"></i>
+        <span class="fp-label">Resolution</span>
+        <span class="fp-range-readout" id="fp-res-readout">–</span>
+        <button class="fp-reset-field" data-field="res" title="Reset resolution">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+      <div class="fp-dual-slider" id="fp-res-slider">
+        <div class="fp-track">
+          <div class="fp-track-fill" id="fp-res-fill"></div>
+        </div>
+        <input type="range" class="fp-range fp-range-lo" id="fp-res-lo" min="0" max="100" value="0">
+        <input type="range" class="fp-range fp-range-hi" id="fp-res-hi" min="0" max="100" value="100">
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+    <div class="fp-footer">
+      <button id="fp-reset-all" class="fp-reset-all-btn">
+        <i class="ti ti-refresh"></i> Reset all filters </button>
+    </div>
+  </div>
+  <div class="scroll-chevron scroll-chevron-bottom">
+    <i class="ti ti-chevron-down scroll-chevron-icon" aria-hidden="true"></i>
+  </div>
+</div>
+<div id="filter-indicator" class="filter-indicator hidden">
+  <i class="ti ti-adjustments-horizontal"></i>
+  <span id="filter-indicator-text">Filtered</span>
+  <button id="filter-indicator-reset" class="fi-reset">
+    <i class="ti ti-x"></i> Reset </button>
+</div>
+
+
+
+    <div class="all">
+  <div id="lib-scrollbar" class="scrollbar"></div>
+      <div id="sort-overlay">Sorting…</div>
+      <div id="gallery-loading">
+        <div class="gl-particles"></div>
+        <div class="gl-title-wrap">
+          <div class="gl-title">Building gallery <span class="dots"></span>
+          </div>
+        </div>
+        <div id="gallery-progress" class="gl-progress"> 0 / 59461
+        </div>
+        <div class="gl-bar-wrap">
+          <div class="gl-bar">
+            <div class="gl-bar-fill"></div>
+          </div>
+          <div class="gl-bar-percent">0%</div>
+          <svg class="gl-bar-circle" viewBox="0 0 20 20">
+            <circle class="bg" cx="10" cy="10" r="8"></circle>
+            <circle class="fg" cx="10" cy="10" r="8"></circle>
+          </svg>
+        </div>
+        <div class="gl-status"></div>
+      </div>
+      <div id="gallery" class="gallery grid-layout dimmed"></div>
+      <div id="spacer"></div>
+      <div id="lightbox" class="lightbox hidden" tabindex="-1" role="dialog" aria-modal="true" aria-label="Image preview">
+        <div class="lb-container">
+          <div class="data-wrapper">
+            <div id="lbMetaBox" class="lb-panel hidden">
+              <div class="lb-panel-titlebar">
+                <span class="lb-panel-label">Tool info</span>
+                <i class="ti ti-photo" aria-hidden="true"></i>
+              </div>
+              <div class="lb-section">
+                <div class="lb-filename" id="lbMetaFilename">–</div>
+                <div class="lb-date-row" id="lbDateLabel">–</div>
+              </div>
+              <div class="lb-section">
+                <div class="lb-row">
+                  <span class="lb-row-label">Saved</span>
+                  <span class="lb-row-value" id="lbFullDate">–</span>
+                </div>
+                <div class="lb-row">
+                  <span class="lb-row-label">Assigned</span>
+                  <span id="lbAssignedDate">–</span>
+                </div>
+                <div class="lb-row">
+                  <span class="lb-row-label">Release</span>
+                  <span class="lb-row-value" id="lbReleaseDate">–</span>
+                </div>
+              </div>
+              <div class="lb-section">
+                <div class="lb-row">
+                  <span class="lb-row-label">Type</span>
+                  <span class="lb-row-value">Website</span>
+                </div>
+                <div class="lb-row">
+                  <span class="lb-row-label">Notes</span>
+                  <span class="lb-row-value">Username synced monthly.</span>
+                </div>
+              </div>
+              <div class="lb-section">
+                <div class="lb-row-label" style="margin-bottom:5px;">Description</div>
+                <div class="lb-row-value" style="white-space:normal; line-height:1.4;">Tracking site for anime and manga progress, used as a backup/cross-reference.</div>
+              </div>
+            </div>
+          </div>
+          <div class="lb-content">
+            <div class="lb-glow"></div>
+            <div class="lb-glow-2"></div>
+            <div class="lb-glow-3"></div>
+            <div class="lightbox-image-wrapper">
+              <div id="lbClose" aria-label="Close">
+                <i class="ti ti-x" aria-hidden="true"></i>
+              </div>
+              <div id="lbPrev" class="lb-btn" aria-label="Previous Image">
+                <i class="ti ti-chevron-left" aria-hidden="true"></i>
+              </div>
+              <div id="lbNext" class="lb-btn" aria-label="Next Image">
+                <i class="ti ti-chevron-right" aria-hidden="true"></i>
+              </div>
+              <div class="mag-tooltip">
+                <div class="mag-tooltip-text">
+                  <i class="ti ti-zoom-in" aria-hidden="true"></i> Ctrl click + scroll to zoom
+                </div>
+              </div>
+              <img id="lbImage" src="" alt="" />
+              <div id="lbLens"></div>
+            </div>
+            <div class="caption-wrapper">
+              <div class="lb-caption">
+                <div class="namedate-wrapper">
+                  <div id="lbFilename"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="lightboxSpinner"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+document.addEventListener('wheel', (e) => {
+    const lightboxOpen = !document.querySelector('.lightbox').classList.contains('hidden');
+
+    if (lightboxOpen && e.ctrlKey) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
+
+</script>
+<script src="../msg.js"></script>
+<script>
+let lastMouseX = 0;
+let lastMouseY = 0;
+
+
+document.addEventListener('wheel', (e) => {
+    const all = document.querySelector('.all');
+    const sidebar = document.querySelector('.sidebar-scroll');
+    const filterPanel = document.querySelector('.filter-panel');
+
+    if (!all || !sidebar) return;
+
+    // If the event originated inside ANY scrollable container, let it scroll normally
+    if (
+        all.contains(e.target) ||
+        sidebar.contains(e.target) ||
+        (filterPanel && filterPanel.contains(e.target))
+    ) {
+        return;
+    }
+
+    // Otherwise forward scroll to .all
+    all.scrollTop += e.deltaY;
+}, { passive: true });
+
+
+
+
+
+function showMagnifierHint() {
+    const tip = document.querySelector('.mag-tooltip');
+    if (!tip) return;
+
+    tip.classList.add('show');
+
+    setTimeout(() => {
+        tip.classList.add('fade-out');
+    }, 5000);
+
+    setTimeout(() => {
+        tip.classList.remove('show', 'fade-out');
+    }, 6000);
+}
+
+function updateSettingsBox() {
+    const box = document.getElementById("settings-box");
+    if (!box) return;
+
+    const layoutText = window.layoutMode === "masonry" ? "Masonry" : "Grid";
+    const themeText  = document.documentElement.classList.contains('dark') ? "Dark" : "Light";
+
+    const sortText  = window.ascending ? "Ascending" : "Descending";
+    const orderText = window.sortField === "date" ? "Release Date" : "Recently Added";
+
+    box.innerHTML = `
+        <div><strong>Sort:</strong> ${sortText}</div>
+        <div><strong>Order:</strong> ${orderText}</div>
+        <div><strong>Layout:</strong> ${layoutText}</div>
+        <div><strong>Theme:</strong> ${themeText}</div>
+    `;
+}
+
+document.querySelectorAll('#controls button').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(updateSettingsBox, 50));
+});
+
+// updateSettingsBox();
+
+function getAnchorItem(scrollTop) {
+    return items.find(item => item.y + item.height >= scrollTop);
+}
+
+window.layoutMode = "grid";
+
+const layoutGridBtn = document.getElementById('layout-grid');
+const layoutMasonryBtn = document.getElementById('layout-masonry');
+const gallery = document.getElementById('gallery');
+const scrollContainer = document.querySelector('.all');
+
+function setLayout(mode) {
+    allItems = window.allItems;
+    const anchorIndex = Math.min(window.firstVisibleIndex || 0, allItems.length - 1);
+    const anchor = allItems[anchorIndex] || allItems[0];
+    if (!anchor) return;
+    const offsetWithinItem = scrollContainer.scrollTop - anchor.y;
+
+    window.layoutMode = mode;
+    gallery.classList.toggle("masonry-layout", mode === "masonry");
+    gallery.classList.toggle("grid-layout", mode === "grid");
+
+    layoutGridBtn.classList.toggle('active', mode === "grid");
+    layoutMasonryBtn.classList.toggle('active', mode === "masonry");
+
+    computeVirtualPositions();
+    document.getElementById("spacer").style.height = computeVirtualPositions.totalHeight + "px";
+
+
+    rerenderVirtualized();
+    requestAnimationFrame(() => {
+        const newY = allItems[anchorIndex].y;
+        scrollContainer.scrollTop = newY + offsetWithinItem;
+    });
+}
+
+layoutGridBtn.addEventListener('click', () => setLayout('grid'));
+layoutMasonryBtn.addEventListener('click', () => setLayout('masonry'));
+
+
+
+// SCOPE A
+(() => {
+		// 1) Injected by Python:
+        let imageChunks = ["<div class=\"item\" data-index=\"0\" data-bit=\"1\" data-date=\"1768003200\" data-uploaded=\"1768003200\" data-assigned=\"1\" data-yymmdd=\"260110\" data-size=\"0\" data-ft='[]' data-status=\"Website\" data-genres='[\"Tracker\"]' data-w=\"680\" data-h=\"1000\"><a href=\"https://upload.wikimedia.org/wikipedia/commons/6/61/AniList_logo.svg\" target=\"_blank\" rel=\"noopener\"><div class=\"thumb loading\"><img src=\"https://upload.wikimedia.org/wikipedia/commons/6/61/AniList_logo.svg\" loading=\"lazy\"></div></a><div class=\"filename\">AniList</div> <div class=\"dates\"> <div class=\"date\" data-longdate=\"260110000000\"> Type: Website </div> </div></div>"];
+		window.ascending = false;
+		window.sortField = "date";
+		let lightboxWasOpen = false;
+		let spinnerTimeout;
+		let ctrlDown = false;
+		let mouseDown = false;
+		let lensActive = false;
+		let zoomFactor = 1;
+		let pendingX = 0;
+		let pendingY = 0;
+		let rafRunning = false;
+		let easedHX = 50;
+		let easedHY = 50;
+		let glassLens = null;
+		let magnifierHintShown = false;
+		let allItemsCache = null;
+		let allItems = [];
+		window.allItems = allItems;
+		let itemWidth = 190;
+		let itemHeight = 310;
+		let gap = 10;
+		window.timelineMap = null;
+		let isDraggingTimeline = false;
+		let dragStartY = 0;
+		let dragStartScrollTop = 0;
+		let dragStartTime = 0;
+		let dragStartScroll = 0;
+		const rendered = new Map();
+		const reItem = /<div class="item"([\s\S]*?)<\/div>/gi;
+		const reIndex = /data-index="(\d+)"/i;
+		const reFull = /<a[^>]+href="([^"]+)"/i;
+		const reThumb = /<img[^>]+src="([^"]+)"/i;
+		const reYymmdd = /data-yymmdd="([^"]+)"/i;
+		const reUploaded = /data-uploaded="([^"]+)"/i;
+		const reRelease = /data-release="([^"]+)"/i;
+		const reAssigned = /data-assigned="([^"]+)"/i;
+		const reSize = /data-size="([^"]+)"/i;
+		const reFT = /data-ft='([^']+)'/i;
+		const reStatus = /data-status="([^"]+)"/i;
+		const reGenres = /data-genres='([^']+)'/i;
+		const reRating = /data-rating="([^"]+)"/i;
+		const reTitle  = /<div class="filename">([^<]*)<\/div>/i;
+		const scroller = document.querySelector('.all');
+		const scrollbarEl = document.getElementById("timeline-bar");
+		const currentEl = document.getElementById("timeline-current");
+		currentEl.addEventListener("mousedown", (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			isDraggingTimeline = true;
+			dragStartY = e.clientY;
+			dragStartScrollTop = scroller.scrollTop;
+			dragStartScroll = scroller.scrollTop;
+			dragStartTime = performance.now();
+			document.body.classList.add("dragging-timeline");
+		});
+		document.addEventListener("mousemove", (e) => {
+			if (!isDraggingTimeline) return;
+			const deltaY = e.clientY - dragStartY;
+			const totalHeight = computeVirtualPositions.totalHeight;
+			const scrollbarHeight = scrollbarEl.clientHeight;
+			const ratio = deltaY / scrollbarHeight;
+			const targetScroll = dragStartScrollTop + ratio * totalHeight;
+			scroller.scrollTop = Math.max(0, Math.min(totalHeight, targetScroll));
+		});
+		document.addEventListener("mouseup", () => {
+			if (!isDraggingTimeline) return;
+			isDraggingTimeline = false;
+			document.body.classList.remove("dragging-timeline");
+		});
+
+		function executeScripts(container) {
+			const scripts = container.querySelectorAll("script");
+			scripts.forEach(oldScript => {
+				const newScript = document.createElement("script");
+				if (oldScript.src) {
+					newScript.src = oldScript.src;
+				} else {
+					newScript.textContent = oldScript.textContent;
+				}
+				document.body.appendChild(newScript);
+				oldScript.remove();
+			});
+		}
+		async function loadTopbarHTML() {
+			const container = document.getElementById("topbar-container");
+			const res = await fetch("../topbar.html");
+			const html = await res.text();
+			container.innerHTML = html;
+			executeScripts(container);
+		}
+
+		function updateTimelineCurrentPosition() {
+			const scrollTop = scroller.scrollTop;
+			const totalHeight = computeVirtualPositions.totalHeight;
+			const scrollbarHeight = scrollbarEl.clientHeight;
+			const currentY = (scrollTop / totalHeight) * scrollbarHeight;
+			currentEl.style.top = `${currentY}px`;
+		}
+		scroller.addEventListener('scroll', updateTimelineCurrentPosition);
+
+		function getYearAnchorEntry(months) {
+			let best = null;
+			for (const month in months) {
+				const entry = months[month];
+				if (!best || entry.firstTimestamp < best.firstTimestamp) {
+					best = entry;
+				}
+			}
+			return best;
+		}
+
+		function renderTimelineMarkers() {
+			const bar = document.getElementById("timeline-bar");
+			if (!bar || !window.timelineMap) return;
+			bar.querySelectorAll('.timeline-marker, .timeline-year').forEach(el => el.remove());
+			const barHeight = bar.clientHeight;
+			const reverse = window.ascending;
+			for (const year in timelineMap) {
+				const yearEntry = getYearAnchorEntry(timelineMap[year]);
+				if (yearEntry && typeof yearEntry.scrollY === "number") {
+					let y = yearEntry.scrollY;
+					if (reverse) y = barHeight - y;
+					const label = document.createElement("div");
+					label.className = "timeline-year";
+					label.textContent = year;
+					label.style.top = `${y}px`;
+					label.addEventListener("click", (e) => {
+						e.stopPropagation();
+						scrollToYear(year);
+					});
+					bar.appendChild(label);
+				}
+				for (const month in timelineMap[year]) {
+					const entry = timelineMap[year][month];
+					if (typeof entry.scrollY !== "number") continue;
+					let y = entry.scrollY;
+					if (reverse) y = barHeight - y;
+					const marker = document.createElement("div");
+					marker.className = "timeline-marker";
+					marker.style.top = `${y}px`;
+					marker.addEventListener("click", (e) => {
+						e.stopPropagation();
+						scrollToMonth(year, month);
+					});
+					bar.appendChild(marker);
+				}
+			}
+		}
+
+		function scrollToYear(year) {
+			const entry = getYearAnchorEntry(timelineMap[year]);
+			if (!entry) return;
+			const index = entry.firstArrayIndex;
+			const item = allItems[index];
+			if (!item) return;
+			let targetY = item.y;
+			if (window.ascending) {
+				const total = computeVirtualPositions.totalHeight;
+				targetY = total - targetY;
+			}
+			document.querySelector('.all').scrollTo({
+				top: targetY,
+				behavior: "instant"
+			});
+		}
+
+		function scrollToMonth(year, month) {
+			const entry = timelineMap[year][month];
+			if (!entry) return;
+			const index = entry.firstArrayIndex;
+			const item = allItems[index];
+			if (!item) return;
+			let targetY = item.y;
+			if (window.ascending) {
+				const total = computeVirtualPositions.totalHeight;
+				targetY = total - targetY;
+			}
+			document.querySelector('.all').scrollTo({
+				top: targetY,
+				behavior: "instant"
+			});
+		}
+		const scrollbarHeight = scrollbarEl.clientHeight;
+
+		function normalizeTimelinePositions(scrollbarHeight) {
+			if (!timelineMap || !allItems || !scrollbarHeight) {
+				console.log("normalizeTimelinePositions: missing data", {
+					timelineMap,
+					allItems,
+					scrollbarHeight
+				});
+				return;
+			}
+			const totalHeight = computeVirtualPositions.totalHeight;
+			for (const year in timelineMap) {
+				for (const month in timelineMap[year]) {
+					const entry = timelineMap[year][month];
+					const y = entry.y;
+					entry.scrollY = (y / totalHeight) * scrollbarHeight;
+				}
+			}
+		}
+
+		function updateTimelineYPositions() {
+			if (!window.timelineMap || !window.allItems) return;
+			for (const year in window.timelineMap) {
+				for (const month in window.timelineMap[year]) {
+					const idx = window.timelineMap[year][month].firstArrayIndex;
+					const item = window.allItems[idx];
+					if (!item || typeof item.y !== "number") {
+						window.timelineMap[year][month].y = 0;
+						continue;
+					}
+					window.timelineMap[year][month].y = item.y;
+				}
+			}
+		}
+
+		function getItemTimelineDate(item) {
+			if (!item.date) return null;
+			const d = new Date(item.date * 1000);
+			return {
+				year: d.getFullYear(),
+				month: d.getMonth() + 1,
+				day: d.getDate(),
+				source: "primary"
+			};
+		}
+
+		function buildTimelineMap() {
+			const timeline = {};
+			allItems.forEach((item, arrayIndex) => {
+				const d = getItemTimelineDate(item);
+				if (!d) return;
+				const {
+					year,
+					month
+				} = d;
+				const timestamp = item.date;
+				if (!timeline[year]) timeline[year] = {};
+				const bucket = timeline[year][month];
+				if (!bucket) {
+					timeline[year][month] = {
+						firstTimestamp: timestamp,
+						firstArrayIndex: arrayIndex,
+						count: 1
+					};
+				} else {
+					if (timestamp < bucket.firstTimestamp) {
+						bucket.firstTimestamp = timestamp;
+						bucket.firstArrayIndex = arrayIndex;
+					} else if (timestamp === bucket.firstTimestamp &&
+						arrayIndex < bucket.firstArrayIndex) {
+						bucket.firstArrayIndex = arrayIndex;
+					}
+					bucket.count++;
+				}
+			});
+			return timeline;
+		}
+
+		function getInjectedTotalCount() {
+			const el = document.querySelector(".image-count");
+			if (!el) return null;
+			const match = el.textContent.match(/(\d+)/);
+			return match ? Number(match[1]) : null;
+		}
+
+        function buildAllItemsMetadata() {
+            if (allItemsCache) return allItemsCache;
+            const out = [];
+            for (let c = 0; c < imageChunks.length; c++) {
+                const parts = imageChunks[c].split(/(?=<div class="item")/);
+                for (const block of parts) {
+                    if (!block.startsWith('<div class="item"')) continue;
+                    const idx      = reIndex.exec(block);
+                    const full     = reFull.exec(block);
+                    const thumb    = reThumb.exec(block);
+                    const yymmdd   = reYymmdd.exec(block);
+                    const uploaded = reUploaded.exec(block);
+                    const assigned = reAssigned.exec(block);
+                    const size     = reSize.exec(block);
+                    const ft       = reFT.exec(block);
+                    const w        = /data-w="(\d+)"/.exec(block);
+                    const h        = /data-h="(\d+)"/.exec(block);
+                    const bit      = /data-bit="(\d+)"/.exec(block);
+                    const dateM    = /data-date="([^"]+)"/.exec(block);
+                    const release  = reRelease.exec(block);
+                    const status   = reStatus.exec(block);
+                    const genres   = reGenres.exec(block);
+                    const rating   = reRating.exec(block);
+                    const title    = reTitle.exec(block);
+                    out.push({
+                        index:         idx      ? parseInt(idx[1], 10)      : null,
+                        full:          full     ? full[1]                    : null,
+                        thumb:         thumb    ? thumb[1]                   : null,
+                        yymmdd:        yymmdd   ? yymmdd[1]                  : null,
+                        uploaded:      uploaded ? parseInt(uploaded[1], 10)  : null,
+                        date:          dateM    ? parseInt(dateM[1], 10)     : null,
+                        release:       release  ? parseInt(release[1], 10)   : null,
+                        assigned:      assigned ? assigned[1] === "1"        : false,
+                        size:          size     ? parseInt(size[1], 10)      : null,
+                        ft:            ft       ? JSON.parse(ft[1])          : [],
+                        chunk:         c,
+                        html:          block,
+                        filename:      full     ? full[1].split("/").pop()   : "",
+                        title:         title    ? title[1]                  : "",
+                        assignedLabel: yymmdd   ? yymmdd[1]                  : "",
+                        savedLabel:    uploaded ? uploaded[1]                : "",
+                        longDate:      uploaded ? uploaded[1]                : "",
+                        width:         w        ? parseInt(w[1], 10)         : null,
+                        height:        h        ? parseInt(h[1], 10)         : null,
+                        bit:           bit      ? parseInt(bit[1], 10)       : null,
+                        raw: {
+                            status: status ? status[1] : null,
+                            genres: genres ? JSON.parse(genres[1]) : [],
+                            rating: rating ? parseFloat(rating[1]) : null,
+                        },
+                    });
+                }
+            }
+            allItemsCache = out;
+            return out;
+        }
+
+		function addMultiBadge(el, it) {
+			if (!it.ft || it.ft.length < 1) return;
+			const thumb = el.querySelector('.thumb');
+			if (!thumb) return;
+			const badge = document.createElement('div');
+			badge.className = 'multi-badge';
+			badge.innerHTML = `<i class="ti ti-users"></i><span>${it.ft.length + 1}</span>`;
+			thumb.style.position = "relative";
+			thumb.appendChild(badge);
+		}
+
+		function renderVisibleItems() {
+			allItems = window.allItems;
+			const scroller = document.querySelector('.all');
+			const gallery = document.querySelector('.gallery');
+			const scrollTop = scroller.scrollTop;
+			const viewportHeight = scroller.clientHeight;
+			const bufferEnter = 800;
+			const bufferExit = 3000;
+			const startY = scrollTop - bufferEnter;
+			const endY = scrollTop + viewportHeight + bufferEnter;
+			const removeAbove = scrollTop - bufferExit;
+            const removeBelow = scrollTop + viewportHeight + bufferExit;
+			let firstVisibleIndex = null;
+			for (const [pos, node] of rendered) {
+				const it = allItems[pos];
+				if (!it) {
+					node.remove();
+					rendered.delete(pos);
+					continue;
+				}
+				const height = (window.layoutMode === "masonry") ? it.displayHeight : itemHeight;
+                if (it.y + height < removeAbove || it.y > removeBelow) {
+                    node.querySelectorAll('img').forEach(img => img.src = '');
+                    node.remove();
+                    rendered.delete(pos);
+                }
+			}
+			for (let i = 0; i < allItems.length; i++) {
+				const it = allItems[i];
+				const height = (window.layoutMode === "masonry") ? it.displayHeight : itemHeight;
+				const top = it.y;
+				const bottom = it.y + height;
+				if (bottom < startY || top > endY) continue;
+				if (firstVisibleIndex === null) {
+					firstVisibleIndex = i;
+				}
+				if (!rendered.has(i)) {
+					const el = document.createElement('div');
+					el.className = 'item';
+					el.dataset.index = i;
+					el.dataset.bitIndex = it.bit;
+					el.style.setProperty('--x', `${it.x}px`);
+					el.style.setProperty('--y', `${it.y}px`);
+					el.innerHTML = it.html
+						.replace(/<div class="item"[^>]*>/, '')
+						.replace(/<\/div>\s*$/, '');
+					addMultiBadge(el, it);
+					const badge = el.querySelector('.multi-badge');
+					if (badge) requestAnimationFrame(() => badge.style.opacity = '1');
+					if (window.layoutMode === "masonry") {
+						el.style.width = `var(--masonry-width)`;
+						el.style.height = it.displayHeight + "px";
+						const thumb = el.querySelector('.thumb');
+						if (thumb) thumb.style.height = it.imageDisplayHeight + "px";
+					} else {
+						el.style.width = `var(--item-width)`;
+						el.style.height = "310px";
+					}
+					gallery.appendChild(el);
+					rendered.set(i, el);
+                    if (window.viewObserver) window.viewObserver.observe(el);
+				}
+			}
+			window.firstVisibleIndex = firstVisibleIndex;
+			// window.attachItemsToObserver();
+		}
+
+		function updateRenderedPositions() {
+			for (const [index, node] of rendered) {
+				const it = allItems[index];
+				node.style.setProperty('--x', `${it.x}px`);
+				node.style.setProperty('--y', `${it.y}px`);
+				if (window.layoutMode === "masonry") {
+					node.style.height = it.displayHeight + "px";
+					node.style.width = `var(--masonry-width)`;
+					const thumb = node.querySelector('.thumb');
+					if (thumb) {
+						thumb.style.height = it.imageDisplayHeight + "px";
+					}
+				} else {
+					node.style.height = "310px";
+					node.style.width = `var(--item-width)`;
+				}
+			}
+		}
+
+		function computeMasonryPositions() {
+			allItems = window.allItems
+			const gallery = document.querySelector('.gallery');
+			const galleryWidth = gallery.clientWidth;
+			const gap = 12;
+			const metaHeight = 60;
+			const minWidth = 180;
+			const columns = Math.max(
+				1,
+				Math.floor((galleryWidth + gap) / (minWidth + gap))
+			);
+			const usedWidth = columns * minWidth + (columns - 1) * gap;
+			const leftover = galleryWidth - usedWidth;
+			const extraPerColumn = leftover / columns;
+			const columnWidth = minWidth + extraPerColumn;
+			const colHeights = new Array(columns).fill(0);
+			for (const item of allItems) {
+				const w = item.width;
+				const h = item.height;
+				if (!w || !h) {
+					item.x = 0;
+					item.y = 0;
+					continue;
+				}
+				const displayHeight = (h / w) * columnWidth;
+				let col = 0;
+				let minHeight = colHeights[0];
+				for (let i = 1; i < columns; i++) {
+					if (colHeights[i] < minHeight) {
+						minHeight = colHeights[i];
+						col = i;
+					}
+				}
+				const x = col * (columnWidth + gap);
+				const y = colHeights[col];
+				item.x = x;
+				item.y = y;
+				item.imageDisplayHeight = displayHeight;
+				item.displayHeight = displayHeight + metaHeight;
+				colHeights[col] += item.displayHeight + gap;
+			}
+			const totalHeight = Math.max(...colHeights);
+			document.documentElement.style.setProperty('--masonry-width', columnWidth + 'px');
+			computeVirtualPositions.columns = columns;
+			computeVirtualPositions.totalHeight = totalHeight;
+		}
+
+		function updateTimelineBar() {
+			const scrollbarEl = document.getElementById("timeline-bar");
+			if (!scrollbarEl) return;
+			if (window.sortField === "uploaded" || hasActiveFilters()) {
+				scrollbarEl.classList.add("hidden");
+				return;
+			}
+			scrollbarEl.classList.remove("hidden");
+			const scrollbarHeight = scrollbarEl.clientHeight;
+			updateTimelineYPositions();
+			normalizeTimelinePositions(scrollbarHeight);
+			renderTimelineMarkers();
+			updateTimelineCurrentPosition();
+		}
+		window.updateTimelineBar = updateTimelineBar;
+
+		function computeVirtualPositions() {
+			allItems = window.allItems
+			if (window.layoutMode === "masonry") {
+				computeMasonryPositions();
+				return;
+			}
+			const gallery = document.querySelector('.gallery');
+			const galleryWidth = gallery.clientWidth;
+			const minWidth = 180;
+			const gap = 10;
+			const itemHeight = 310 + gap;
+			const columns = Math.max(
+				1,
+				Math.floor((galleryWidth + gap) / (minWidth + gap))
+			);
+			const usedWidth = columns * minWidth + (columns - 1) * gap;
+			const leftover = galleryWidth - usedWidth;
+			const extraPerColumn = leftover / columns;
+			const itemWidth = minWidth + extraPerColumn;
+			document.documentElement.style.setProperty('--item-width', `${itemWidth}px`);
+			allItems.forEach((item, i) => {
+				const row = Math.floor(i / columns);
+				const col = i % columns;
+				item.y = row * itemHeight;
+				item.x = col * (itemWidth + gap);
+			});
+			const totalRows = Math.ceil(allItems.length / columns);
+			const totalHeight = totalRows * itemHeight;
+			computeVirtualPositions.columns = columns;
+			computeVirtualPositions.totalHeight = totalHeight;
+		}
+		window.computeVirtualPositions = computeVirtualPositions;
+		let resizeTimer = null;
+		window.addEventListener("resize", () => {
+			clearTimeout(resizeTimer);
+			resizeTimer = setTimeout(() => {
+				if (window.layoutMode === "masonry") {
+					computeMasonryPositions();
+				} else {
+					computeVirtualPositions();
+				}
+				spacer.style.height = computeVirtualPositions.totalHeight + "px";
+				updateRenderedPositions();
+				renderVisibleItems();
+				updateTimelineBar();
+			}, 120);
+		});
+		window.attachItemsToObserver = function() {
+			if (!window.viewObserver) return;
+			requestAnimationFrame(() => {
+				const items = document.querySelectorAll('.item[data-bit-index]');
+				items.forEach(el => window.viewObserver.observe(el));
+			});
+		};
+function buildAllItemsChunked(onComplete, bar, progressEl) {
+    const meta = buildAllItemsMetadata();
+    allItems = meta;
+    window.allItems = allItems;
+    const totalItems = meta.length;
+    const EARLY_RENDER_COUNT = 60;
+
+    computeVirtualPositions();
+    const spacer = document.getElementById("spacer");
+    if (spacer) spacer.style.height = computeVirtualPositions.totalHeight + "px";
+    const gallery = document.querySelector('.gallery');
+    const firstN = meta.slice(0, EARLY_RENDER_COUNT);
+    firstN.forEach(it => {
+        if (rendered.has(it.index)) return;
+        const el = document.createElement('div');
+        el.className = 'item';
+        el.dataset.index = it.index;
+        el.dataset.early = "1";
+        el.dataset.bitIndex = it.bit;
+        el.style.setProperty('--x', `${it.x}px`);
+        el.style.setProperty('--y', `${it.y}px`);
+        el.innerHTML = it.html
+            .replace(/<div class="item"[^>]*>/, '')
+            .replace(/<\/div>\s*$/, '');
+        addMultiBadge(el, it);
+        if (window.layoutMode === "masonry") {
+            el.style.width = `var(--masonry-width)`;
+            el.style.height = it.displayHeight + "px";
+            const thumb = el.querySelector('.thumb');
+            if (thumb) thumb.style.height = it.imageDisplayHeight + "px";
+        } else {
+            el.style.width = `var(--item-width)`;
+            el.style.height = "310px";
+        }
+        gallery.appendChild(el);
+        rendered.set(it.index, el);
+        if (window.viewObserver) window.viewObserver.observe(el);
+    });
+
+    const pctEl        = document.querySelector(".gl-bar-percent");
+    const circleEl     = document.querySelector(".gl-bar-circle .fg");
+    const CIRCUMFERENCE = 50.24;
+
+    let processed = EARLY_RENDER_COUNT;
+    function processNextChunk() {
+        processed = Math.min(processed + 200, totalItems);
+        const pct = Math.round((processed / totalItems) * 100);
+        if (bar)        bar.style.width = `${pct}%`;
+        if (pctEl)      pctEl.textContent = `${pct}%`;
+        if (circleEl)   circleEl.style.strokeDashoffset = CIRCUMFERENCE * (1 - pct / 100);
+        if (progressEl) progressEl.textContent = `${processed} / ${totalItems}`;
+
+        if (processed < totalItems) {
+            setTimeout(processNextChunk, 0);
+        } else {
+            const timelineBar = document.getElementById("timeline-bar");
+            if (timelineBar) timelineBar.classList.add("visible");
+            if (onComplete) onComplete();
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.multi-badge').forEach(b => b.style.opacity = '1');
+            });
+        }
+    }
+    setTimeout(processNextChunk, 0);
+}
+
+		// function buildAllItems() {
+		// 	if (allItems) return allItems;
+		// 	const meta = buildAllItemsMetadata().slice();
+		// 	const byIndex = new Map(meta.map(m => [m.index, m]));
+		// 	const parser = new DOMParser();
+		// 	for (let c = 0; c < imageChunks.length; c++) {
+		// 		const doc = parser.parseFromString(imageChunks[c], "text/html");
+		// 		const items = doc.querySelectorAll(".item");
+		// 		items.forEach(it => {
+		// 			const idx = Number(it.dataset.index);
+		// 			const m = byIndex.get(idx);
+		// 			if (!m) return;
+		// 			m.html = it.innerHTML;
+		// 			const a = it.querySelector("a");
+		// 			const img = it.querySelector("img");
+		// 			const filename = it.querySelector(".filename");
+		// 			m.full = a ? a.href : m.full;
+		// 			m.thumb = img ? img.src : m.thumb;
+		// 			m.filename = filename ? filename.textContent : m.filename;
+		// 			m.yymmdd = it.dataset.yymmdd ?? m.yymmdd;
+		// 			m.uploaded = Number(it.dataset.uploaded ?? m.uploaded);
+		// 			m.date = Number(it.dataset.date ?? m.date);
+		// 			m.assigned = it.dataset.assigned === "1";
+		// 			m.assignedLabel = it.dataset.assignedlabel ?? m.assignedLabel;
+		// 			m.size = Number(it.dataset.size ?? m.size);
+		// 			const ftRaw = it.dataset.ft;
+		// 			m.ft = ftRaw && ftRaw !== "[]" ? JSON.parse(ftRaw) : [];
+		// 		});
+		// 	}
+		// 	allItems = meta;
+		// 	return allItems;
+		// }
+
+		// function getAllItems() {
+		// 	return buildAllItems();
+		// }
+
+
+		function sortItems(sortAsc = false, field = "date") {
+			if (!hasActiveFilters()) originalAllItems = null;
+			allItems = window.allItems;
+			const all = window.allItems;
+			all.sort((a, b) => {
+				const av = a[field];
+				const bv = b[field];
+				return sortAsc ? av - bv : bv - av;
+			});
+			all.forEach((item, i) => {
+				item.index = i;
+			});
+			allItemsCache = all;
+		}
+		window.sortItems = sortItems;
+
+		function createLensInstance(imageElementOrUrl, radius) {
+			return GlassLens.init({
+				containerId: 'lbLens',
+				imageElement: imageElementOrUrl,
+				imageSrc: typeof imageElementOrUrl === "string" ? imageElementOrUrl : null,
+				radius,
+				refraction: 0.05,
+				aberration: 0.001
+			});
+		}
+
+		function activateLensState() {
+			lensActive = true;
+		}
+
+		function deactivateLensState() {
+			lensActive = false;
+		}
+
+		function getAverageColor(img, callback) {
+			try {
+				const canvas = document.createElement('canvas');
+				const ctx = canvas.getContext('2d');
+				canvas.width = img.naturalWidth;
+				canvas.height = img.naturalHeight;
+				ctx.drawImage(img, 0, 0);
+				const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+				const colors = {};
+				const histogram = new Array(256).fill(0);
+				const red = new Array(256).fill(0);
+				const green = new Array(256).fill(0);
+				const blue = new Array(256).fill(0);
+				const luminosity = new Array(256).fill(0);
+				let totalBrightness = 0;
+				let totalPixels = 0;
+				let brightnessPixels = 0;
+				let brightnessSum = 0;
+				let emptyPixels = 0;
+				for (let i = 0; i < data.length; i += 4) {
+					const r = data[i],
+						g = data[i + 1],
+						b = data[i + 2];
+					const max = Math.max(r, g, b);
+					const min = Math.min(r, g, b);
+					const brightness = (r + g + b) / 3;
+					const saturation = max - min;
+					brightnessSum += brightness;
+					brightnessPixels++;
+					// Check if it's an "empty" pixel first
+					if ((r > 235 && g > 235 && b > 235) || (r < 20 && g < 20 && b < 20)) {
+						emptyPixels++;
+					}
+					histogram[Math.round(brightness)]++;
+					red[r]++;
+					green[g]++;
+					blue[b]++;
+					luminosity[Math.round(0.299 * r + 0.587 * g + 0.114 * b)]++;
+					// Then check if it should count toward color swatches
+					if (brightness < 100 || brightness > 230 || saturation < 55) continue;
+					totalBrightness += brightness;
+					totalPixels++;
+					const key = `${r >> 4},${g >> 4},${b >> 4}`;
+					colors[key] = (colors[key] || 0) + 1;
+				}
+				const avgBrightness = brightnessPixels ? Math.round(brightnessSum / brightnessPixels) : 0;
+				const fillRatio = (brightnessPixels - emptyPixels) / brightnessPixels;
+				const emptyRatio = brightnessPixels ? (emptyPixels / brightnessPixels) : 0;
+				const colorDiversity = Object.keys(colors).length;
+				let sortedColors = Object.entries(colors).sort((a, b) => b[1] - a[1]);
+				const seen = [];
+				const distinctColors = sortedColors.filter(([key]) => {
+					const [r, g, b] = key.split(',').map(n => parseInt(n, 10) * 16);
+					const hue = Math.atan2(Math.sqrt(3) * (g - b), 2 * r - g - b) * (180 / Math.PI);
+					if (seen.some(h => Math.abs(h - hue) < 20)) return false;
+					seen.push(hue);
+					return true;
+				}).slice(0, 3);
+				const hexes = distinctColors.map(([key]) => {
+					const [r, g, b] = key.split(',').map(n => parseInt(n, 10) * 16);
+					return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+				});
+				callback(null, hexes, avgBrightness, histogram, red, green, blue, colorDiversity, emptyRatio, luminosity);
+			} catch (err) {
+				console.warn('Avg color error:', err);
+				callback(null, 'Unavailable', 0, [], [], [], [], 0, 0);
+			}
+		}
+		document.documentElement.classList.add('loading');
+		document.body.classList.add('loading');       
+// SCOPE B
+document.addEventListener("DOMContentLoaded", async () => {
+	setupToggleGroup('lib-fp-status', 'status', () =>
+		logEvent(`filter-status/${galleryName}/${[...filterState.status].join(',') || 'none'}`)
+	);
+
+	setupRatingSlider();
+	setupSizeSlider();
+	setupResSlider();
+	setupFieldResets();
+	setupPanelToggle();
+	setupResetAll();
+	setupDateSlider();
+	setupFilterNudge();
+	await loadTopbarHTML();
+	await Promise.race([
+		document.fonts.ready,
+		new Promise(resolve => setTimeout(resolve, 4000))
+	]);
+	setTimeout(() => {
+		const loader = document.getElementById('page-loader');
+		loader.classList.add('dismissing');
+		const cleanup = () => {
+			loader.remove();
+			setTimeout(() => {
+				document.body.classList.remove('loading');
+				document.documentElement.classList.remove('loading');
+			}, 100);
+		};
+		loader.addEventListener('transitionend', cleanup, {
+			once: true
+		});
+		setTimeout(cleanup, 5000); // fallback in case transitionend doesnt fire
+	}, 450);
+	setupSidebarToggles();
+	setupSidebarSearch();
+
+	function spawnSparkles() {
+		const container = document.querySelector(".gl-particles");
+		if (!container) return;
+		for (let i = 0; i < 20; i++) spawnSingleSparkle(container, "back");
+		for (let i = 0; i < 10; i++) spawnSingleSparkle(container, "mid");
+		for (let i = 0; i < 3; i++) spawnSingleSparkle(container, "front");
+	}
+
+	function spawnSingleSparkle(container, layer) {
+		const spark = document.createElement("div");
+		spark.classList.add("sparkle");
+		if (layer === "back") {
+			spark.style.setProperty("--size", "1.5px");
+			spark.style.setProperty("--opacity", "0.3");
+			spark.style.setProperty("--blur", "0.5px");
+			spark.style.setProperty("--drift-time", (10 + Math.random() * 6) + "s");
+			spark.style.setProperty("--flicker-scale", "0.5");
+		} else if (layer === "mid") {
+			spark.style.setProperty("--size", "3px");
+			spark.style.setProperty("--opacity", "0.8");
+			spark.style.setProperty("--blur", "0px");
+			spark.style.setProperty("--drift-time", (6 + Math.random() * 4) + "s");
+			spark.style.setProperty("--flicker-scale", "1");
+		} else if (layer === "front") {
+			spark.style.setProperty("--size", "4.5px");
+			spark.style.setProperty("--opacity", "1");
+			spark.style.setProperty("--blur", "3px");
+			spark.style.setProperty("--drift-time", (1 + Math.random() * 4) + "s");
+			spark.style.setProperty("--flicker-scale", "1.3");
+		}
+		spark.style.left = Math.random() * 100 + "%";
+		spark.style.top = Math.random() * 100 + "%";
+		const sparkColors = getComputedStyle(document.documentElement)
+			.getPropertyValue("--spark-colors")
+			.split(",")
+			.map(c => c.trim());
+		spark.style.setProperty("--spark-color",
+			sparkColors[Math.floor(Math.random() * sparkColors.length)]
+		);
+		const dx = (Math.random() - 0.5) * 40;
+		const dy = (Math.random() - 0.5) * 40;
+		spark.style.setProperty("--dx", dx + "px");
+		spark.style.setProperty("--dy", dy + "px");
+		container.appendChild(spark);
+		spark.addEventListener("animationend", () => {
+			spark.remove();
+			setTimeout(() => spawnSingleSparkle(container, layer), 200 + Math.random() * 400);
+		});
+	}
+	spawnSparkles();
+
+	function updateStatusMessage() {
+		if (!statusEl) return;
+		const messageObj = getNextMessage();
+		const finalText = formatMessage(messageObj);
+		statusEl.textContent = finalText;
+		statusEl.setAttribute("data-text", finalText);
+		statusEl.classList.remove("rare-message", "upgrade-message", "mid-message");
+		if (messageObj.tags?.includes("rare")) statusEl.classList.add("rare-message");
+		if (messageObj.tags?.includes("upgrade")) statusEl.classList.add("upgrade-message");
+		if (messageObj.tags?.includes("mid")) statusEl.classList.add("mid-message");
+		statusEl.style.opacity = 1;
+	}
+
+	function getMemberFromFileName() {
+		const path = window.location.pathname;
+		const fileName = path.split("/").pop();
+		const namePart = fileName.replace(".html", "");
+		const parts = namePart.split("_");
+		return parts[1] ?
+			parts[1].charAt(0) + parts[1].slice(1).toLowerCase() :
+			"";
+	}
+
+	function formatMessage(messageObj) {
+		return messageObj.text.replace(/{member}/g, currentMember);
+	}
+	const currentMember = getMemberFromFileName();
+	const gallery = document.getElementById('gallery');
+	const overlay = document.getElementById("gallery-loading");
+	const bar = document.querySelector(".gl-bar-fill");
+	const progressEl = document.getElementById("gallery-progress");
+	const statusEl = document.querySelector(".gl-status");
+	const messages = window.loadingMessages;
+	let messageQueue = shuffle([...messages]);
+
+	function shuffle(arr) {
+		for (let i = arr.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[arr[i], arr[j]] = [arr[j], arr[i]];
+		}
+		return arr;
+	}
+
+	function getNextMessage() {
+		if (messageQueue.length === 0) {
+			messageQueue = shuffle([...messages]);
+		}
+		return messageQueue.pop();
+	}
+	if (statusEl) {
+		statusEl.style.opacity = 0;
+		updateStatusMessage();
+		requestAnimationFrame(() => {
+			statusEl.style.opacity = 1;
+		});
+	}
+	setInterval(() => {
+		if (!statusEl) return;
+		statusEl.style.opacity = 0;
+		setTimeout(updateStatusMessage, 400);
+	}, 4000);
+	gallery.classList.add("dimmed");
+
+    buildAllItemsChunked(() => {
+        computeVirtualPositions();
+        populateGenreFilters();
+
+        window.timelineMap = buildTimelineMap();
+        // console.log("timeline built", window.timelineMap);
+
+        updateTimelineYPositions();
+
+        normalizeTimelinePositions(scrollbarHeight);
+        renderTimelineMarkers();
+
+        const spacer = document.getElementById("spacer");
+        spacer.style.height = computeVirtualPositions.totalHeight + "px";
+
+        gallery.classList.remove("dimmed");
+        if (overlay) overlay.classList.add("hidden");
+
+        renderVisibleItems();
+
+        let rafPending = false;
+        document.querySelector('.all').addEventListener('scroll', () => {
+            if (rafPending) return;
+            rafPending = true;
+            requestAnimationFrame(() => {
+                renderVisibleItems();
+                rafPending = false;
+            });
+        });
+    }, bar, progressEl);
+
+    updateSettingsBox();
+
+    randomBtn.addEventListener('click', () => {
+        const all = window.allItems;
+        const idx = Math.floor(Math.random() * all.length);
+
+        openLightbox(idx);
+	}); window.items = []; gallery.addEventListener('click', e => {
+	const img = e.target.closest('img');
+	if (!img || !gallery.contains(img)) return;
+	e.preventDefault();
+	const clicked = img.closest('.item');
+	const idx = Number(clicked.dataset.index);
+	openLightbox(idx);
+});
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+function showSortingOverlay() {
+	const overlay = document.getElementById('sort-overlay');
+	overlay.classList.add('show');
+}
+
+function hideSortingOverlay() {
+	const overlay = document.getElementById('sort-overlay');
+	overlay.classList.remove('show');
+}
+updateSettingsBox(true);
+
+function rerenderVirtualized() {
+	allItems = window.allItems;
+	const gallery = document.querySelector('.gallery');
+	const scroller = document.querySelector('.all');
+	gallery.innerHTML = "";
+	rendered.clear();
+	computeVirtualPositions();
+	const spacer = document.getElementById("spacer");
+	if (spacer) spacer.style.height = computeVirtualPositions.totalHeight + "px";
+	renderVisibleItems();
+	updateTimelineBar();
+}
+window.rerenderVirtualized = function() {
+	allItems = window.allItems;
+	rerenderVirtualized();
+}; window.toggleSortOrder = function() {
+	window.ascending = !window.ascending;
+	document.querySelector('[data-sort="asc"]').classList.toggle('active', window.ascending);
+	document.querySelector('[data-sort="desc"]').classList.toggle('active', !window.ascending);
+	showSortingOverlay();
+	updateSettingsBox();
+	const mode = window.ascending ? "asc" : "desc";
+	requestAnimationFrame(() => {
+		requestAnimationFrame(() => {
+			const field = (window.sortField === "date") ? "release" : "uploaded";
+			sortItems(window.ascending, field);
+			if (originalAllItems) {
+				originalAllItems.sort((a, b) => {
+					const av = a[field];
+					const bv = b[field];
+					return window.ascending ? av - bv : bv - av;
+				});
+			}
+			rerenderVirtualized();
+			setTimeout(hideSortingOverlay, 200);
+		});
+	});
+}; window.toggleDateField = function() {
+	window.sortField = (window.sortField === "date") ? "uploaded" : "date";
+	const chronoBtn = document.getElementById("toggle-date-field");
+	const recentBtn = document.getElementById("toggle-date-field-alt");
+	chronoBtn.classList.toggle('active', window.sortField === "date");
+	recentBtn.classList.toggle('active', window.sortField === "uploaded");
+	const mode = (window.sortField === "date") ? "chronological" : "recent";
+	showSortingOverlay();
+	requestAnimationFrame(() => requestAnimationFrame(() => {
+		const field = (window.sortField === "date") ? "release" : "uploaded";
+		sortItems(window.ascending, field);
+		if (originalAllItems) {
+			originalAllItems.sort((a, b) => {
+				const av = a[field];
+				const bv = b[field];
+				return window.ascending ? av - bv : bv - av;
+			});
+		}
+		rerenderVirtualized();
+		setTimeout(hideSortingOverlay, 200);
+	}));
+}; window.scrollToMovie = () => {
+	const title = document.getElementById('titleSearch').value.trim().toLowerCase();
+	const showError = () => {
+		const err = document.getElementById('date-error');
+		err.classList.add('visible');
+		clearTimeout(err._hideTimer);
+		err._hideTimer = setTimeout(() => err.classList.remove('visible'), 4500);
+	};
+	if (!title) {
+		showError();
+		return;
+	}
+	let bestIndex = -1;
+	for (let i = 0; i < allItems.length; i++) {
+		const it = allItems[i];
+		if (!(it.title || it.filename).toLowerCase().includes(title)) continue;
+		bestIndex = i;
+		break;
+	}
+	if (bestIndex < 0) {
+		showError();
+		return;
+	}
+	const target = allItems[bestIndex];
+	const scroller = document.querySelector('.all');
+	scroller.scrollTo({
+		top: target.y - scroller.clientHeight / 2,
+		behavior: 'instant'
+	});
+	const centerWhenReady = () => {
+		const el = document.querySelector(`.item[data-index="${bestIndex}"]`);
+		if (!el) {
+			requestAnimationFrame(centerWhenReady);
+			return;
+		}
+		const viewportBias = 0.30;
+		const rect = el.getBoundingClientRect();
+		const itemCenter = rect.top + rect.height / 2;
+		const viewportTarget = scroller.clientHeight * viewportBias;
+		scroller.scrollTo({
+			top: scroller.scrollTop + (itemCenter - viewportTarget),
+			behavior: 'instant'
+		});
+		el.classList.add('highlight');
+		setTimeout(() => {
+			el.classList.remove('highlight');
+		}, 2500);
+	};
+	requestAnimationFrame(centerWhenReady);
+}; window.toggleDarkMode = () => {
+	const d = document.documentElement.classList.toggle('dark');
+	localStorage.setItem('theme', d ? 'dark' : 'light');
+	updateSettingsBox();
+};
+const lightbox = document.getElementById('lightbox'),
+	lbImage = document.getElementById('lbImage'),
+	lbFilename = document.getElementById('lbFilename'),
+	lbClose = document.getElementById('lbClose'),
+	lbPrev = document.getElementById('lbPrev'),
+	lbNext = document.getElementById('lbNext'),
+	lightboxSpinner = document.getElementById('lightboxSpinner'),
+	lbAssignedDate = document.getElementById('lbAssignedDate'),
+	lbFullDate = document.getElementById('lbFullDate'),
+	lbReleaseDate = document.getElementById('lbReleaseDate'),
+	lbMetaBox = document.getElementById('lbMetaBox');
+const lbDateLabel = document.getElementById("lbDateLabel");
+
+function rebuildLens(sharedImage) {
+	const oldCanvas = lbLens.querySelector('canvas');
+	if (oldCanvas) oldCanvas.remove();
+	const radius = (lbLens.offsetWidth / 2) || 300;
+	glassLens = createLensInstance(sharedImage, radius);
+	const canvas = lbLens.querySelector('canvas');
+	if (canvas) {
+		canvas.width = lbLens.offsetWidth;
+		canvas.height = lbLens.offsetHeight;
+	}
+}
+const lbLens = document.getElementById('lbLens');
+const imageWrapper = document.querySelector('.lightbox-image-wrapper');
+// document.addEventListener('mousedown', e => {
+//     console.log('MOUSEDOWN TARGET:', e.target);
+// });
+imageWrapper.addEventListener('mousedown', e => {
+	if (e.button !== 0) return;
+	mouseDown = true;
+	const rect = lbImage.getBoundingClientRect();
+	pendingX = e.clientX - rect.left;
+	pendingY = e.clientY - rect.top;
+	if (ctrlDown) {
+		activateLens();
+		lbLens.classList.add('active');
+		const fakeEvent = new MouseEvent('mousemove', {
+			clientX: e.clientX,
+			clientY: e.clientY,
+			bubbles: true
+		});
+		imageWrapper.dispatchEvent(fakeEvent);
+	}
+});
+
+function activateLens() {
+	if (!lensActive) {
+		activateLensState();
+		const rect = imageWrapper.getBoundingClientRect();
+		pendingX = lastMouseX - rect.left;
+		pendingY = lastMouseY - rect.top;
+		updateLensPosition();
+		lbLens.style.opacity = '1';
+		lbLens.classList.add('active');
+		imageWrapper.classList.add('lens-active');
+	}
+}
+
+function deactivateLens() {
+	if (lensActive) {
+		deactivateLensState();
+		imageWrapper.classList.remove('lens-active');
+		lbLens.style.opacity = '0';
+		lbLens.classList.remove('active');
+		imageWrapper.classList.remove('lens-active');
+	}
+}
+
+function updateLensPosition() {
+	if (!lensActive) {
+		rafRunning = false;
+		return;
+	}
+	const radius = lbLens.offsetWidth / 2;
+	lbLens.style.left = (pendingX - radius) + 'px';
+	lbLens.style.top = (pendingY - radius) + 'px';
+	const naturalW = parseInt(lbLens.dataset.naturalWidth, 10);
+	const naturalH = parseInt(lbLens.dataset.naturalHeight, 10);
+	const displayW = lbImage.clientWidth;
+	const displayH = lbImage.clientHeight;
+	const scaleX = naturalW / displayW;
+	const scaleY = naturalH / displayH;
+	const naturalX = pendingX * scaleX;
+	const naturalY = pendingY * scaleY;
+	const LENS_ADJUST = 1;
+	const Y_OFFSET = -3;
+	const X_OFFSET = -3;
+	const effZoom = zoomFactor * LENS_ADJUST;
+	const bgW = naturalW * effZoom;
+	const bgH = naturalH * effZoom;
+	const bgX = -(naturalX * effZoom - radius) + X_OFFSET;
+	const bgY = -(naturalY * effZoom - radius) + Y_OFFSET;
+	let hx = ((pendingX - radius) / (radius * 2)) * 100;
+	let hy = ((pendingY - radius) / (radius * 2)) * 100;
+	hx = 100 - hx;
+	hy = 100 - hy;
+	hx = Math.max(0, Math.min(100, hx));
+	hy = Math.max(0, Math.min(100, hy));
+	const ease = 0.33;
+	easedHX += (hx - easedHX) * ease;
+	easedHY += (hy - easedHY) * ease;
+	if (glassLens) {
+		const rect = imageWrapper.getBoundingClientRect();
+		const px = rect.left + pendingX;
+		const py = rect.top + pendingY;
+		glassLens.setPointer(px, py);
+		glassLens.setCenter(naturalX, naturalH - naturalY);
+		glassLens.setZoom(effZoom);
+	}
+	requestAnimationFrame(updateLensPosition);
+}
+const sharedImageCache = new Map();
+
+function loadSharedImage(url) {
+	return new Promise((resolve, reject) => {
+		if (sharedImageCache.has(url)) {
+			resolve(sharedImageCache.get(url));
+			return;
+		}
+		const img = new Image();
+		img.crossOrigin = "anonymous";
+		img.onload = () => {
+			sharedImageCache.set(url, img);
+			resolve(img);
+		};
+		img.onerror = reject;
+		img.src = url;
+	});
+}
+async function imageToBlobURL(img) {
+	const canvas = document.createElement('canvas');
+	canvas.width = img.naturalWidth;
+	canvas.height = img.naturalHeight;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0);
+	return new Promise(resolve => {
+		canvas.toBlob(blob => {
+			resolve(URL.createObjectURL(blob));
+		}, 'image/jpeg', 0.95);
+	});
+}
+
+function formatYymmdd(yymmdd) {
+	const yy = parseInt(yymmdd.slice(0, 2), 10);
+	const mm = parseInt(yymmdd.slice(2, 4), 10);
+	const dd = parseInt(yymmdd.slice(4, 6), 10);
+	const year = 2000 + yy;
+	const date = new Date(year, mm - 1, dd);
+	return date.toLocaleDateString(undefined, {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric'
+	});
+}
+const COLORS = ['#ffd6f9', '#ffe680', '#b0e7ff', '#ffffff', '#d4b3ff'];
+const SHAPES = ['circle', 'line', 'diamond'];
+
+function randBetween(a, b) {
+	return a + Math.random() * (b - a);
+}
+
+function randItem(arr) {
+	return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function spawnParticle(container, color, angle, speed, size, shape, delay) {
+	const el = document.createElement('div');
+	el.style.cssText = `position:absolute;top:50%;left:50%;pointer-events:none;opacity:0;`;
+	if (shape === 'diamond') {
+		el.style.cssText += `width:${size}px;height:${size}px;background:${color};border-radius:2px;transform:translate(-50%,-50%) rotate(45deg)`;
+	} else if (shape === 'line') {
+		el.style.cssText += `width:2px;height:${size*2.2}px;background:${color};border-radius:2px;transform:translate(-50%,-50%) rotate(${angle}deg)`;
+	} else {
+		el.style.cssText += `width:${size}px;height:${size}px;background:${color};border-radius:50%;transform:translate(-50%,-50%)`;
+	}
+	container.appendChild(el);
+	const rad = angle * Math.PI / 180;
+	const tx = Math.cos(rad) * speed,
+		ty = Math.sin(rad) * speed;
+	el.animate([{
+				opacity: 1,
+				transform: el.style.transform + ' scale(1)'
+			},
+			{
+				opacity: 0,
+				transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0.15)`
+			}
+		], {
+			duration: randBetween(420, 680),
+			delay,
+			easing: 'cubic-bezier(0.22,1,0.36,1)',
+			fill: 'forwards'
+		})
+		.onfinish = () => el.remove();
+}
+
+function burst(container) {
+	const count = Math.floor(randBetween(14, 20));
+	for (let i = 0; i < count; i++) {
+		spawnParticle(container, randItem(COLORS), randBetween(0, 360),
+			randBetween(18, 42), randBetween(3, 7), randItem(SHAPES), randBetween(0, 60));
+	}
+}
+const adjustWrapperTop = () => {
+	const wrapper = document.querySelector('.data-wrapper');
+	wrapper.style.top = '0px';
+	const wrapperRect = wrapper.getBoundingClientRect();
+	const overflow = wrapperRect.bottom - window.innerHeight + 10;
+	if (overflow > 0) {
+		const currentTop = parseInt(wrapper.style.top) || 0;
+		const newTop = currentTop - overflow;
+		const minTop = -wrapperRect.top;
+		wrapper.style.top = `${Math.max(newTop, minTop)}px`;
+	}
+};
+window.openLightbox = function(idx) {
+	currentIndex = idx;
+	const all = window.allItems;
+	const meta = all[idx];
+	window.currentLightboxMeta = meta;
+	if (!meta) return;
+	clearTimeout(spinnerTimeout);
+	lightboxSpinner.style.opacity = '0';
+	spinnerTimeout = setTimeout(() => {
+		lightboxSpinner.style.opacity = '1';
+	}, 1);
+	lbImage.dataset.originalSrc = meta.full;
+	lbImage.alt = meta.filename;
+	lbFilename.textContent = meta.title || meta.filename;
+	document.getElementById('lbMetaFilename').textContent =
+		meta.title || meta.filename.replace(/\.[^/.]+$/, '');
+	if (meta.assigned) {
+		lbDateLabel.textContent = `Assigned: ${meta.yymmdd}`;
+	} else {
+		lbDateLabel.textContent = `Saved: ${meta.yymmdd}`;
+	}
+	const d = new Date(meta.uploaded * 1000);
+	const datePart = d.toLocaleDateString(undefined, {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric'
+	});
+	const timePart = d.toLocaleTimeString(undefined, {
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric'
+	});
+	lbFullDate.textContent = `${datePart} at ${timePart}`;
+	if (meta.assigned) {
+		const formatted = formatYymmdd(meta.yymmdd);
+		lbAssignedDate.innerHTML = `<span class="lb-assigned-pill">${formatted}</span>`;
+	} else {
+		lbAssignedDate.innerHTML = '<span class="lb-unassigned">Not assigned</span>';
+	}
+	if (meta.release) {
+		lbReleaseDate.textContent = new Date(meta.release * 1000).toLocaleDateString(undefined, {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
+	} else {
+		lbReleaseDate.textContent = '–';
+	}
+	loadSharedImage(meta.full).then(preload => {
+		const width = preload.naturalWidth;
+		const height = preload.naturalHeight;
+		lbLens.dataset.naturalWidth = width;
+		lbLens.dataset.naturalHeight = height;
+		imageToBlobURL(preload).then(blobURL => {
+			lbImage.src = blobURL;
+			lbImage.onload = () => {
+				if (!lightboxWasOpen) {
+					lightbox.classList.remove('hidden');
+					lightbox.focus();
+				}
+				if (!magnifierHintShown) {
+					showMagnifierHint();
+					magnifierHintShown = true;
+				}
+				const naturalW = lbImage.naturalWidth;
+				const naturalH = lbImage.naturalHeight;
+				const displayW = lbImage.clientWidth;
+				const displayH = lbImage.clientHeight;
+				const minZoomW = displayW / naturalW;
+				const minZoomH = displayH / naturalH;
+				let minZoom = Math.max(minZoomW, minZoomH);
+				// Clamp zoomFactor so it’s never below this image’s minimum
+				if (zoomFactor < minZoom) {
+					zoomFactor = minZoom;
+				}
+				lbMetaBox.classList.add('visible');
+				adjustWrapperTop();
+				window.addEventListener('resize', adjustWrapperTop);
+				clearTimeout(spinnerTimeout);
+				lightboxSpinner.style.opacity = '0';
+				rebuildLens(preload);
+				lbLens.style.opacity = '0';
+			};
+		});
+	});
+	if (!lightbox.classList.contains('hidden')) {
+		lightboxWasOpen = true;
+	} else {
+		lightboxWasOpen = false;
+		lbImage.src = '';
+	}
+};
+
+
+function closeLightbox() {
+	lightbox.classList.add('hidden');
+	window.removeEventListener('resize', adjustWrapperTop);
+	currentIndex = -1;
+	deactivateLens();
+	ctrlDown = false;
+	mouseDown = false;
+}
+
+function showNext() {
+	const all = window.allItems;
+	openLightbox((currentIndex + 1) % all.length);
+}
+
+function showPrev() {
+	const all = window.allItems;
+	openLightbox((currentIndex - 1 + all.length) % all.length);
+}
+lbClose.addEventListener('click', closeLightbox); lightbox.addEventListener('click', e => {
+	if (e.target === lightbox) closeLightbox();
+}); document.addEventListener('keydown', e => {
+	if (lightbox.classList.contains('hidden')) return;
+	if (e.key === 'Escape') closeLightbox();
+	if (e.key === 'ArrowRight') showNext();
+	if (e.key === 'ArrowLeft') showPrev();
+}); lbNext.addEventListener('click', e => {
+	e.stopPropagation();
+	showNext();
+}); lbPrev.addEventListener('click', e => {
+	e.stopPropagation();
+	showPrev();
+}); document.addEventListener('load', e => {
+	if (e.target.tagName === 'IMG') {
+		const wrapper = e.target.closest('.thumb');
+		if (wrapper) wrapper.classList.remove('loading');
+	}
+}, true); document.addEventListener('keydown', e => {
+	if (e.key === 'Control') {
+		ctrlDown = true;
+		if (mouseDown) activateLens();
+	}
+}); document.addEventListener('keyup', e => {
+	if (e.key === 'Control') {
+		ctrlDown = false;
+		deactivateLens();
+	}
+}); document.addEventListener('mouseup', e => {
+	if (e.button === 0) {
+		mouseDown = false;
+		deactivateLens();
+	}
+}); imageWrapper.addEventListener('mouseleave', () => {
+	deactivateLens();
+}); imageWrapper.addEventListener('mousemove', e => {
+	lastMouseX = e.clientX;
+	lastMouseY = e.clientY;
+	const rect = imageWrapper.getBoundingClientRect();
+	pendingX = e.clientX - rect.left;
+	pendingY = e.clientY - rect.top;
+	if (!lensActive) return;
+	if (!rafRunning) {
+		rafRunning = true;
+		requestAnimationFrame(updateLensPosition);
+	}
+}); imageWrapper.addEventListener('wheel', e => {
+	if (!lensActive) return;
+	e.preventDefault();
+	// Adjust zoom factor
+	const ZOOM_STEP = zoomFactor * 0.1; // 10% of current zoom
+	const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+	zoomFactor += delta;
+	const naturalW = parseInt(lbLens.dataset.naturalWidth, 10);
+	const naturalH = parseInt(lbLens.dataset.naturalHeight, 10);
+	const displayW = lbImage.clientWidth;
+	const displayH = lbImage.clientHeight;
+	// Compute the minimum zoom that matches the displayed image scale
+	// This prevents the lens from ever becoming smaller than the displayed image
+	const minZoomW = displayW / naturalW;
+	const minZoomH = displayH / naturalH;
+	const minZoom = Math.max(minZoomW, minZoomH);
+	// Clamp zoomFactor so the lens never shrinks below the displayed scale
+	if (zoomFactor < minZoom) zoomFactor = minZoom;
+	// Clamp max zoom
+	if (zoomFactor > 8) zoomFactor = 8;
+	lbLens.classList.add('zooming');
+	clearTimeout(lbLens._zoomTimeout);
+	lbLens._zoomTimeout = setTimeout(() => {
+		lbLens.classList.remove('zooming');
+	}, 1000);
+}, {
+	passive: false
+});
+
+function setupSidebarToggles() {
+	document.querySelectorAll('.folder-toggle').forEach(btn => {
+		const f = btn.dataset.folder,
+			ul = document.querySelector(`.member-list[data-folder="${f}"]`);
+		if (!ul) return;
+		if (!ul.hasAttribute('data-init')) {
+			const s = localStorage.getItem(`folder-${f}`);
+			ul.style.display = s === 'open' ? 'block' : 'none';
+			ul.setAttribute('data-init', '1');
+		}
+		btn.addEventListener('click', ev => {
+			ev.preventDefault();
+			ev.stopPropagation();
+			const is = ul.style.display === 'block';
+			ul.style.setProperty('display', is ? 'none' : 'block', 'important');
+			localStorage.setItem(`folder-${f}`, is ? 'closed' : 'open');
+		});
+	});
+}
+
+function setupSidebarSearch() {
+	const searchInput = document.getElementById('sidebarSearch');
+	searchInput.addEventListener('input', function() {
+		const filter = this.value.toLowerCase();
+		const groupItems = document.querySelectorAll('.folder-tree > li');
+		groupItems.forEach(groupLi => {
+			const toggleBtn = groupLi.querySelector('.folder-toggle');
+			const memberList = groupLi.querySelector('.member-list');
+			const groupName = toggleBtn.textContent.toLowerCase();
+			const members = memberList.querySelectorAll('li');
+			let groupMatches = groupName.includes(filter);
+			let memberMatches = false;
+			members.forEach(li => {
+				const name = li.textContent.toLowerCase();
+				const isVisible = !filter || name.includes(filter) || groupMatches;
+				li.style.display = isVisible ? '' : 'none';
+				if (isVisible) memberMatches = true;
+			});
+			if (filter) {
+				groupLi.style.display = (groupMatches || memberMatches) ? '' : 'none';
+				memberList.style.setProperty('display',
+					(groupMatches || memberMatches) ? 'block' : 'none',
+					'important'
+				);
+			} else {
+				groupLi.style.display = '';
+				const saved = localStorage.getItem(`folder-${toggleBtn.dataset.folder}`);
+				memberList.style.setProperty('display',
+					saved === 'open' ? 'block' : 'none',
+					'important'
+				);
+			}
+		});
+	});
+}
+});
+const toggleSidebarBtn = document.getElementById('toggle-sidebar');
+if (toggleSidebarBtn) {
+	toggleSidebarBtn.addEventListener('click', () => {
+		const allFolders = document.querySelectorAll('.member-list');
+		const isAnyOpen = Array.from(allFolders).some(ul => {
+			const computed = window.getComputedStyle(ul).display;
+			return computed !== 'none';
+		});
+		allFolders.forEach(ul => {
+			const group = ul.dataset.folder;
+			if (!group) return;
+			ul.style.setProperty('display', isAnyOpen ? 'none' : 'block', 'important');
+			localStorage.setItem(`folder-${group}`, isAnyOpen ? 'closed' : 'open');
+		});
+	});
+}
+const scrollBtn = document.getElementById('scrollToTop');
+const all = document.querySelector('.all');
+if (scrollBtn && all) {
+	all.addEventListener('scroll', () => {
+		if (all.scrollTop > 300) {
+			scrollBtn.classList.add('visible');
+		} else {
+			scrollBtn.classList.remove('visible');
+		}
+	});
+	scrollBtn.addEventListener('click', () => {
+		all.scrollTo({
+			top: 0,
+			behavior: 'smooth'
+		});
+	});
+}
+try {
+	let theme = localStorage.getItem('theme');
+	if (!theme) {
+		theme = 'dark';
+		localStorage.setItem('theme', theme);
+	}
+	document.documentElement.classList.toggle('dark', theme === 'dark');
+
+	function toggleDarkMode() {
+		const isDark = document.documentElement.classList.toggle('dark');
+		localStorage.setItem('theme', isDark ? 'dark' : 'light');
+	}
+} catch (e) {}
+document.querySelectorAll(".birthday[data-birth]").forEach(span => {
+	const birthStr = span.dataset.birth;
+	if (!birthStr) return;
+	const birthDate = new Date(birthStr);
+	const today = new Date();
+	let age = today.getFullYear() - birthDate.getFullYear();
+	if (today.getMonth() < birthDate.getMonth() ||
+		(today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) {
+		age--;
+	}
+	if (!span.textContent.includes(`(${age})`)) {
+		span.textContent = `${birthStr} (${age})`;
+	}
+});})();
+
+const galleryName = location.pathname.split("/").pop().replace(".html", "");
+
+function logEvent(path) {}
+
+function formatBytesLog(b) {
+	if (b < 1024) return b + 'B';
+	if (b < 1024 * 1024) return Math.round(b / 1024) + 'KB';
+	return (b / (1024 * 1024)).toFixed(1) + 'MB';
+}
+
+function formatMPLog(mp) {
+	return mp.toFixed(1) + 'MP';
+}
+const filterState = {
+  status: new Set(),
+  genre: new Set(),
+  ratingMin: null,
+  ratingMax: null
+};
+let originalAllItems = null;
+let isDraggingSlider = false;
+let dragReleaseTimer = null;
+let applyTimer = null;
+let sizeDataMin = 0,
+	sizeDataMax = 0;
+let slidersInited = false;
+let dateInited = false;
+
+function formatBytes(b) {
+	if (b < 1024) return b + ' B';
+	if (b < 1024 * 1024) return (b / 1024).toFixed(0) + ' KB';
+	return (b / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function formatMP(mp) {
+	return mp.toFixed(1) + ' MP';
+}
+
+function hasActiveFilters() {
+	return (
+		filterState.status.size > 0 ||
+		filterState.genre.size > 0 ||
+		filterState.ratingMin != null ||
+		filterState.ratingMax != null
+	);
+}
+
+function getOrientation(w, h) {
+	if (!w || !h) return null;
+	if (w === h) return 'square';
+	return w > h ? 'landscape' : 'portrait';
+}
+
+function ensureOriginal() {
+	if (!originalAllItems) {
+		originalAllItems = [...window.allItems];
+	}
+}
+
+function applyFilters(skipEnsure = false) {
+	if (!skipEnsure) ensureOriginal();
+	const filtered = originalAllItems.filter(item => {
+    if (filterState.status.size > 0 && !filterState.status.has(item.raw?.status)) return false;
+    if (filterState.genre.size > 0) {
+        const itemGenres = item.raw?.genres || [];
+        let hasMatch = false;
+        for (const g of filterState.genre) {
+            if (itemGenres.includes(g)) { hasMatch = true; break; }
+        }
+        if (!hasMatch) return false;
+    }
+    if (filterState.ratingMin != null || filterState.ratingMax != null) {
+        const rating = item.raw?.rating;
+        if (rating == null) return false;
+        if (filterState.ratingMin != null && rating < filterState.ratingMin) return false;
+        if (filterState.ratingMax != null && rating > filterState.ratingMax) return false;
+    }
+    return true;
+});
+	if (filtered.length === originalAllItems.length) {
+		const snap = originalAllItems;
+		originalAllItems = null;
+		snap.forEach(item => {
+			delete item.filteredIndex;
+		});
+		window.allItems = snap;
+		window.rerenderVirtualized();
+		updateIndicator(0, 0);
+		updateFilterBtn();
+		updateTimelineBar();
+		return;
+	}
+	filtered.forEach((item, i) => {
+		item.filteredIndex = i;
+	});
+	window.allItems = filtered;
+	window.rerenderVirtualized();
+	const spacer = document.getElementById("spacer");
+	if (spacer) spacer.style.height = computeVirtualPositions.totalHeight + "px";
+	updateIndicator(filtered.length, originalAllItems.length);
+	updateFilterBtn();
+}
+
+function resetFilters() {
+	filterState.status.clear();
+	filterState.genre.clear();
+	filterState.ratingMin = null;
+	filterState.ratingMax = null;
+	if (originalAllItems) {
+		originalAllItems.forEach(item => {
+			delete item.filteredIndex;
+		});
+		window.allItems = originalAllItems;
+		originalAllItems = null;
+	}
+	const field = window.sortField === "date" ? "release" : "uploaded";
+	window.sortItems(window.ascending, field);
+	window.rerenderVirtualized();
+	updateAllToggleUI();
+	resetSizeSliderUI();
+	resetResSliderUI();
+	resetDateSliderUI();
+	resetRatingSliderUI();
+	updateFilterBtn();
+	updateSettingsBox();
+	const bar = document.getElementById('filter-indicator');
+	if (bar) bar.classList.add('hidden');
+	logEvent(`filter-reset-all/${galleryName}`);
+	document.querySelector('.all')?.scrollTo({
+		top: 0,
+		behavior: 'instant'
+	});
+}
+
+function updateIndicator(filtered, total) {
+	const bar = document.getElementById('filter-indicator');
+	const text = document.getElementById('filter-indicator-text');
+	if (!bar || !text) return;
+	if (!hasActiveFilters()) {
+		bar.classList.add('hidden');
+		return;
+	}
+	bar.classList.remove('hidden');
+	text.textContent = `Filtered: ${filtered.toLocaleString()} of ${total.toLocaleString()} images`;
+}
+
+function countActiveFilters() {
+    let count = 0;
+    if (filterState.status.size > 0) count++;
+    if (filterState.genre.size > 0) count++;
+    if (filterState.ratingMin != null || filterState.ratingMax != null) count++;
+    return count;
+}
+
+function updateFilterBtn() {
+	const btn = document.getElementById('filterBtn');
+	const badge = document.getElementById('filter-badge');
+	if (!btn) return;
+	const count = countActiveFilters();
+	btn.classList.toggle('has-filters', count > 0);
+	if (badge) {
+		if (count > 0) {
+			badge.textContent = count;
+			badge.classList.remove('hidden');
+		} else {
+			badge.classList.add('hidden');
+		}
+	}
+}
+
+function updateAllToggleUI() {
+    document.querySelectorAll("#lib-fp-status .fp-toggle").forEach(b =>
+        b.classList.toggle("active", filterState.status.has(b.dataset.value)));
+    document.querySelectorAll("#lib-fp-genre .fp-toggle").forEach(b =>
+        b.classList.toggle("active", filterState.genre.has(b.dataset.value)));
+    const lo = document.getElementById('fp-rating-lo');
+    const hi = document.getElementById('fp-rating-hi');
+    if (lo && hi) {
+        const lv = filterState.ratingMin ?? 0;
+        const hv = filterState.ratingMax ?? 10;
+        lo.value = lv;
+        hi.value = hv;
+        updateRatingFill(lv, hv);
+        updateRatingReadout(lv, hv);
+    }
+}
+
+function populateGenreFilters() {
+	const container = document.getElementById('lib-fp-genre');
+	if (!container || container.dataset.inited) return;
+	const genres = new Set();
+	(window.allItems || []).forEach(item => {
+		(item.raw?.genres || []).forEach(g => genres.add(g));
+	});
+	[...genres].sort().forEach(genre => {
+		const btn = document.createElement('button');
+		btn.className = 'fp-toggle';
+		btn.dataset.value = genre;
+		btn.textContent = genre;
+		container.appendChild(btn);
+	});
+	container.dataset.inited = '1';
+	setupToggleGroup('lib-fp-genre', 'genre', () =>
+		logEvent(`filter-genre/${galleryName}/${[...filterState.genre].join(',') || 'none'}`)
+	);
+}
+
+function setupToggleGroup(containerId, stateKey, logFn) {
+	document.getElementById(containerId)?.querySelectorAll('.fp-toggle').forEach(btn => {
+		btn.addEventListener('click', () => {
+			const val = btn.dataset.value;
+			if (filterState[stateKey].has(val)) {
+				filterState[stateKey].delete(val);
+				btn.classList.remove('active');
+			} else {
+				filterState[stateKey].add(val);
+				btn.classList.add('active');
+			}
+			applyFilters();
+			if (logFn) logFn();
+		});
+	});
+}
+
+function initSizeSliderBounds() {
+	const items = originalAllItems || window.allItems;
+	const sizes = items.map(i => i.size || 0).filter(s => s > 0);
+	if (!sizes.length) return;
+	sizeDataMin = Math.min(...sizes);
+	sizeDataMax = Math.max(...sizes);
+	const lo = document.getElementById('fp-size-lo');
+	const hi = document.getElementById('fp-size-hi');
+	if (lo) lo.value = 0;
+	if (hi) hi.value = 100;
+	updateSizeReadout(0, 100);
+	updateSizeFill(0, 100);
+}
+
+function sliderValToSize(pct) {
+	return sizeDataMin + (pct / 100) * (sizeDataMax - sizeDataMin);
+}
+
+function updateSizeReadout(loPct, hiPct) {
+	const readout = document.getElementById('fp-size-readout');
+	if (!readout) return;
+	if (!sizeDataMin && !sizeDataMax) {
+		readout.textContent = '–';
+		return;
+	}
+	readout.textContent = formatBytes(sliderValToSize(loPct)) + ' – ' + formatBytes(sliderValToSize(hiPct));
+}
+
+function updateSizeFill(loPct, hiPct) {
+	const fill = document.getElementById('fp-size-fill');
+	if (!fill) return;
+	fill.style.left = loPct + '%';
+	fill.style.width = (hiPct - loPct) + '%';
+}
+
+function resetSizeSliderUI() {
+	const lo = document.getElementById('fp-size-lo');
+	const hi = document.getElementById('fp-size-hi');
+	if (lo) lo.value = 0;
+	if (hi) hi.value = 100;
+	updateSizeReadout(0, 100);
+	updateSizeFill(0, 100);
+}
+
+function updateRatingFill(lv, hv) {
+	const fill = document.getElementById('fp-rating-fill');
+	if (!fill) return;
+	fill.style.left = (lv / 10 * 100) + '%';
+	fill.style.width = ((hv - lv) / 10 * 100) + '%';
+}
+
+function updateRatingReadout(lv, hv) {
+	const readout = document.getElementById('fp-rating-readout');
+	if (!readout) return;
+	readout.textContent = (lv === 0 && hv === 10) ? '–' : `${lv.toFixed(1)} – ${hv.toFixed(1)}`;
+}
+
+function resetRatingSliderUI() {
+	const lo = document.getElementById('fp-rating-lo');
+	const hi = document.getElementById('fp-rating-hi');
+	if (lo) lo.value = 0;
+	if (hi) hi.value = 10;
+	updateRatingFill(0, 10);
+	updateRatingReadout(0, 10);
+}
+
+function setupRatingSlider() {
+	const lo = document.getElementById('fp-rating-lo');
+	const hi = document.getElementById('fp-rating-hi');
+	if (!lo || !hi) return;
+	const onInput = () => {
+		let lv = parseFloat(lo.value),
+			hv = parseFloat(hi.value);
+		if (lv > hv) {
+			lo.value = hv;
+			lv = hv;
+		}
+		if (hv < lv) {
+			hi.value = lv;
+			hv = lv;
+		}
+		updateRatingFill(lv, hv);
+		updateRatingReadout(lv, hv);
+	};
+	const onRelease = () => {
+		isDraggingSlider = true;
+		clearTimeout(dragReleaseTimer);
+		const lv = parseFloat(lo.value),
+			hv = parseFloat(hi.value);
+		filterState.ratingMin = lv === 0 ? null : lv;
+		filterState.ratingMax = hv === 10 ? null : hv;
+		clearTimeout(applyTimer);
+		applyTimer = setTimeout(() => {
+			applyFilters();
+			logEvent(`filter-rating/${galleryName}/${lv}-${hv}`);
+			dragReleaseTimer = setTimeout(() => {
+				isDraggingSlider = false;
+			}, 80);
+		}, 300);
+	};
+	lo.addEventListener('input', onInput);
+	hi.addEventListener('input', onInput);
+	[lo, hi].forEach(el => {
+		el.addEventListener('mousedown', () => {
+			isDraggingSlider = true;
+		});
+		el.addEventListener('touchstart', () => {
+			isDraggingSlider = true;
+		}, {
+			passive: true
+		});
+		el.addEventListener('mouseup', onRelease);
+		el.addEventListener('touchend', onRelease);
+	});
+	updateRatingFill(0, 10);
+	updateRatingReadout(0, 10);
+}
+
+function setupSizeSlider() {
+	const lo = document.getElementById('fp-size-lo');
+	const hi = document.getElementById('fp-size-hi');
+	if (!lo || !hi) return;
+	const onInput = () => {
+		let lv = parseInt(lo.value),
+			hv = parseInt(hi.value);
+		if (lv > hv) {
+			lo.value = hv;
+			lv = hv;
+		}
+		if (hv < lv) {
+			hi.value = lv;
+			hv = lv;
+		}
+		updateSizeReadout(lv, hv);
+		updateSizeFill(lv, hv);
+	};
+	const onRelease = () => {
+		isDraggingSlider = true;
+		clearTimeout(dragReleaseTimer);
+		const lv = parseInt(lo.value),
+			hv = parseInt(hi.value);
+		filterState.sizeMin = lv === 0 ? null : sliderValToSize(lv);
+		filterState.sizeMax = hv === 100 ? null : sliderValToSize(hv);
+		clearTimeout(applyTimer);
+		applyTimer = setTimeout(() => {
+			applyFilters();
+			const loLabel = filterState.sizeMin ? formatBytesLog(filterState.sizeMin) : 'min';
+			const hiLabel = filterState.sizeMax ? formatBytesLog(filterState.sizeMax) : 'max';
+			logEvent(`filter-size/${galleryName}/${loLabel}-${hiLabel}`);
+			dragReleaseTimer = setTimeout(() => {
+				isDraggingSlider = false;
+			}, 80);
+		}, 300);
+	};
+	lo.addEventListener('input', onInput);
+	hi.addEventListener('input', onInput);
+	[lo, hi].forEach(el => {
+		el.addEventListener('mousedown', () => {
+			isDraggingSlider = true;
+		});
+		el.addEventListener('touchstart', () => {
+			isDraggingSlider = true;
+		}, {
+			passive: true
+		});
+		el.addEventListener('mouseup', onRelease);
+		el.addEventListener('touchend', onRelease);
+	});
+}
+let dateDataMin = 0,
+	dateDataMax = 0;
+
+function tsToYymmdd(ts) {
+	const d = new Date(ts * 1000);
+	const yy = String(d.getFullYear()).slice(-2);
+	const mm = String(d.getMonth() + 1).padStart(2, '0');
+	const dd = String(d.getDate()).padStart(2, '0');
+	return yy + mm + dd;
+}
+
+function tsToReadable(ts) {
+	const d = new Date(ts * 1000);
+	return d.toLocaleDateString(undefined, {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric'
+	});
+}
+
+function sliderValToDate(pct) {
+	return Math.round(dateDataMin + (pct / 100) * (dateDataMax - dateDataMin));
+}
+
+function updateDateReadout(loPct, hiPct) {
+	const loTs = sliderValToDate(loPct);
+	const hiTs = sliderValToDate(hiPct);
+	const loReadable = document.getElementById('fp-date-lo-readable');
+	const loYymmdd = document.getElementById('fp-date-lo-yymmdd');
+	const hiReadable = document.getElementById('fp-date-hi-readable');
+	const hiYymmdd = document.getElementById('fp-date-hi-yymmdd');
+	if (!dateDataMin && !dateDataMax) {
+		if (loReadable) loReadable.textContent = '–';
+		if (hiReadable) hiReadable.textContent = '–';
+		if (loYymmdd) loYymmdd.textContent = '';
+		if (hiYymmdd) hiYymmdd.textContent = '';
+		return;
+	}
+	if (loReadable) loReadable.textContent = tsToReadable(loTs);
+	if (loYymmdd) loYymmdd.textContent = tsToYymmdd(loTs);
+	if (hiReadable) hiReadable.textContent = tsToReadable(hiTs);
+	if (hiYymmdd) hiYymmdd.textContent = tsToYymmdd(hiTs);
+}
+
+function updateDateFill(loPct, hiPct) {
+	const fill = document.getElementById('fp-date-fill');
+	if (!fill) return;
+	fill.style.left = loPct + '%';
+	fill.style.width = (hiPct - loPct) + '%';
+}
+
+function initDateSliderBounds() {
+	const items = originalAllItems || window.allItems;
+	const dates = items.map(i => i.date || 0).filter(d => d > 0);
+	if (!dates.length) return;
+	dateDataMin = Math.min(...dates);
+	dateDataMax = Math.max(...dates);
+	const lo = document.getElementById('fp-date-lo');
+	const hi = document.getElementById('fp-date-hi');
+	if (lo) lo.value = 0;
+	if (hi) hi.value = 100;
+	updateDateReadout(0, 100);
+	updateDateFill(0, 100);
+}
+
+function resetDateSliderUI() {
+	const lo = document.getElementById('fp-date-lo');
+	const hi = document.getElementById('fp-date-hi');
+	if (lo) lo.value = 0;
+	if (hi) hi.value = 100;
+	updateDateReadout(0, 100);
+	updateDateFill(0, 100);
+}
+
+function setupDateSlider() {
+	const lo = document.getElementById('fp-date-lo');
+	const hi = document.getElementById('fp-date-hi');
+	if (!lo || !hi) return;
+	const onInput = () => {
+		let lv = parseInt(lo.value),
+			hv = parseInt(hi.value);
+		if (lv > hv) {
+			lo.value = hv;
+			lv = hv;
+		}
+		if (hv < lv) {
+			hi.value = lv;
+			hv = lv;
+		}
+		updateDateReadout(lv, hv);
+		updateDateFill(lv, hv);
+	};
+	const onRelease = () => {
+		isDraggingSlider = true;
+		clearTimeout(dragReleaseTimer);
+		const lv = parseInt(lo.value),
+			hv = parseInt(hi.value);
+		filterState.dateMin = lv === 0 ? null : sliderValToDate(lv);
+		filterState.dateMax = hv === 100 ? null : sliderValToDate(hv);
+		clearTimeout(applyTimer);
+		applyTimer = setTimeout(() => {
+			applyFilters();
+			const loLabel = filterState.dateMin ? tsToYymmdd(filterState.dateMin) : 'min';
+			const hiLabel = filterState.dateMax ? tsToYymmdd(filterState.dateMax) : 'max';
+			logEvent(`filter-date/${galleryName}/${loLabel}-${hiLabel}`);
+			dragReleaseTimer = setTimeout(() => {
+				isDraggingSlider = false;
+			}, 80);
+		}, 300);
+	};
+	lo.addEventListener('input', onInput);
+	hi.addEventListener('input', onInput);
+	[lo, hi].forEach(el => {
+		el.addEventListener('mousedown', () => {
+			isDraggingSlider = true;
+		});
+		el.addEventListener('touchstart', () => {
+			isDraggingSlider = true;
+		}, {
+			passive: true
+		});
+		el.addEventListener('mouseup', onRelease);
+		el.addEventListener('touchend', onRelease);
+	});
+}
+let resDataMin = 0,
+	resDataMax = 0;
+
+function sliderValToRes(pct) {
+	return resDataMin + (pct / 100) * (resDataMax - resDataMin);
+}
+
+function updateResReadout(loPct, hiPct) {
+	const readout = document.getElementById('fp-res-readout');
+	if (!readout) return;
+	if (!resDataMin && !resDataMax) {
+		readout.textContent = '–';
+		return;
+	}
+	readout.textContent = formatMP(sliderValToRes(loPct)) + ' – ' + formatMP(sliderValToRes(hiPct));
+}
+
+function updateResFill(loPct, hiPct) {
+	const fill = document.getElementById('fp-res-fill');
+	if (!fill) return;
+	fill.style.left = loPct + '%';
+	fill.style.width = (hiPct - loPct) + '%';
+}
+
+function initResSliderBounds() {
+	const items = originalAllItems || window.allItems;
+	const mps = items
+		.map(i => ((i.width || 0) * (i.height || 0)) / 1_000_000)
+		.filter(mp => mp > 0);
+	if (!mps.length) return;
+	resDataMin = Math.min(...mps);
+	resDataMax = Math.max(...mps);
+	const lo = document.getElementById('fp-res-lo');
+	const hi = document.getElementById('fp-res-hi');
+	if (lo) lo.value = 0;
+	if (hi) hi.value = 100;
+	updateResReadout(0, 100);
+	updateResFill(0, 100);
+}
+
+function resetResSliderUI() {
+	const lo = document.getElementById('fp-res-lo');
+	const hi = document.getElementById('fp-res-hi');
+	if (lo) lo.value = 0;
+	if (hi) hi.value = 100;
+	updateResReadout(0, 100);
+	updateResFill(0, 100);
+}
+
+function setupResSlider() {
+	const lo = document.getElementById('fp-res-lo');
+	const hi = document.getElementById('fp-res-hi');
+	if (!lo || !hi) return;
+	const onInput = () => {
+		let lv = parseInt(lo.value),
+			hv = parseInt(hi.value);
+		if (lv > hv) {
+			lo.value = hv;
+			lv = hv;
+		}
+		if (hv < lv) {
+			hi.value = lv;
+			hv = lv;
+		}
+		updateResReadout(lv, hv);
+		updateResFill(lv, hv);
+	};
+	const onRelease = () => {
+		isDraggingSlider = true;
+		clearTimeout(dragReleaseTimer);
+		const lv = parseInt(lo.value),
+			hv = parseInt(hi.value);
+		filterState.resMin = lv === 0 ? null : sliderValToRes(lv);
+		filterState.resMax = hv === 100 ? null : sliderValToRes(hv);
+		clearTimeout(applyTimer);
+		applyTimer = setTimeout(() => {
+			applyFilters();
+			const loLabel = filterState.resMin ? formatMPLog(filterState.resMin) : 'min';
+			const hiLabel = filterState.resMax ? formatMPLog(filterState.resMax) : 'max';
+			logEvent(`filter-res/${galleryName}/${loLabel}-${hiLabel}`);
+			dragReleaseTimer = setTimeout(() => {
+				isDraggingSlider = false;
+			}, 80);
+		}, 300);
+	};
+	lo.addEventListener('input', onInput);
+	hi.addEventListener('input', onInput);
+	[lo, hi].forEach(el => {
+		el.addEventListener('mousedown', () => {
+			isDraggingSlider = true;
+		});
+		el.addEventListener('touchstart', () => {
+			isDraggingSlider = true;
+		}, {
+			passive: true
+		});
+		el.addEventListener('mouseup', onRelease);
+		el.addEventListener('touchend', onRelease);
+	});
+}
+
+function setupFieldResets() {
+    document.querySelectorAll(".fp-reset-field").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const field = btn.dataset.field;
+            if (field === "status") {
+                filterState.status.clear();
+            } else if (field === "genre") {
+                filterState.genre.clear();
+            } else if (field === "rating") {
+                filterState.ratingMin = null;
+                filterState.ratingMax = null;
+            }
+            updateAllToggleUI();
+            applyFilters();
+        });
+    });
+}
+
+function setupPanelToggle() {
+	const btn = document.getElementById('filterBtn');
+	const panel = document.getElementById('lib-filter-panel');
+	if (!btn || !panel) return;
+
+	function positionPanel() {
+		const rect = btn.getBoundingClientRect();
+		panel.style.top = (rect.bottom + 6) + 'px';
+		panel.style.left = Math.max(8, rect.right - 300) + 'px';
+	}
+	function closePanel() {
+		panel.classList.add('hidden');
+		logEvent(`filter-panel-close/${galleryName}`);
+	}
+	btn.addEventListener('click', (e) => {
+		e.stopPropagation();
+		const opening = panel.classList.contains('hidden');
+		panel.classList.toggle('hidden');
+		if (opening) {
+			positionPanel();
+			requestAnimationFrame(() => {
+				requestAnimationFrame(updateChevron);
+			});
+			logEvent(`filter-panel-open/${galleryName}`);
+		}
+	});
+	document.getElementById('lib-fp-close')?.addEventListener('click', (e) => {
+		e.stopPropagation();
+		closePanel();
+	});
+	document.querySelector('.all')?.addEventListener('scroll', () => {
+		if (!panel.classList.contains('hidden')) positionPanel();
+	});
+	window.addEventListener('resize', () => {
+		if (!panel.classList.contains('hidden')) positionPanel();
+	});
+	document.addEventListener('click', (e) => {
+		if (isDraggingSlider) return;
+		if (!panel.classList.contains('hidden') &&
+			!panel.contains(e.target) &&
+			e.target !== btn) {
+			closePanel();
+		}
+	});
+}
+
+function setupResetAll() {
+	document.getElementById('lib-fp-reset-all')?.addEventListener('click', resetFilters);
+	document.getElementById('filter-indicator-reset')?.addEventListener('click', resetFilters);
+}
+function getGroupMember() {
+	const name = decodeURIComponent(
+		location.pathname.split("/").pop().replace(".html", "")
+	);
+	const parts = name.split("_");
+	if (parts.length < 2) return null;
+	const member = parts[parts.length - 1];
+	const group = parts.slice(0, parts.length - 1).join(" ");
+	return {
+		group,
+		member
+	};
+}
+
+const panel = document.querySelector('.filter-content');
+const topChevron = document.querySelector('.scroll-chevron-top');
+const bottomChevron = document.querySelector('.scroll-chevron-bottom');
+
+function updateChevron() {
+	if (panel.offsetParent === null) return;
+	const hasOverflow =
+		panel.scrollHeight > panel.clientHeight + 1;
+	const atTop =
+		panel.scrollTop <= 1;
+	const atBottom =
+		panel.scrollTop + panel.clientHeight >=
+		panel.scrollHeight - 2;
+	topChevron.classList.toggle(
+		'visible',
+		hasOverflow && !atTop
+	);
+	bottomChevron.classList.toggle(
+		'visible',
+		hasOverflow && !atBottom
+	);
+}
+panel.addEventListener('scroll', updateChevron);
+window.addEventListener('resize', updateChevron);
+requestAnimationFrame(updateChevron);
+
+function setupFilterNudge() {
+	const nudge = document.getElementById('filter-nudge');
+	const btn = document.getElementById('filterBtn');
+	if (!nudge) return;
+	setTimeout(() => {
+		nudge.classList.add('fade-out');
+		setTimeout(() => nudge.remove(), 400);
+	}, 15000);
+	btn?.addEventListener('click', () => {
+		nudge.classList.add('fade-out');
+		setTimeout(() => nudge.remove(), 400);
+	}, {
+		once: true
+	});
+}
+</script>
+
+
+</body>
+</html>
+

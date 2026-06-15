@@ -24,7 +24,7 @@ try {
 
 <title>Home</title>
 
-<link rel="stylesheet" href="index_style.css" defer>
+<link rel="stylesheet" href="index_style.css?v=8" defer>
 </head>
 <body>
 <div id="page-loader">
@@ -80,7 +80,6 @@ body.loading {
     margin-left: 8px;
   }
 </style>
-<div id="auth-container"></div>
 <div id="topbar-container"></div>
 <div class="all">
 
@@ -127,147 +126,15 @@ body.loading {
 </div>
     <ul class="folder-tree">
 <li>
-    <button class="folder-toggle" data-folder="UNIS">UNIS</button>
-    <ul class="member-list" data-folder="UNIS">
-    <li><a href="MEMBERS/UNIS_HYEONJU.html">HYEONJU</a></li>
-    <li><a href="MEMBERS/UNIS_NANA.html">NANA</a></li>
-    <li><a href="MEMBERS/UNIS_GEHLEE.html">GEHLEE</a></li>
-    <li><a href="MEMBERS/UNIS_KOTOKO.html">KOTOKO</a></li>
-    <li><a href="MEMBERS/UNIS_YUNHA.html">YUNHA</a></li>
-    <li><a href="MEMBERS/UNIS_ELISIA.html">ELISIA</a></li>
-    <li><a href="MEMBERS/UNIS_YOONA.html">YOONA</a></li>
-    <li><a href="MEMBERS/UNIS_SEOWON.html">SEOWON</a></li>
-  </ul>
-</li>
-<li>
-  <button class="folder-toggle" data-folder="ILLIT">ILLIT</button>
-  <ul class="member-list" data-folder="ILLIT">
-    <li><a href="MEMBERS/ILLIT_YUNAH.html">YUNAH</a></li>
-    <li><a href="MEMBERS/ILLIT_MINJU.html">MINJU</a></li>
-    <li><a href="MEMBERS/ILLIT_MOKA.html">MOKA</a></li>
-    <li><a href="MEMBERS/ILLIT_WONHEE.html">WONHEE</a></li>
-    <li><a href="MEMBERS/ILLIT_IROHA.html">IROHA</a></li>
-  </ul>
-</li>
-<li>
-  <button class="folder-toggle" data-folder="NEWJEANS">NEWJEANS</button>
-  <ul class="member-list" data-folder="NEWJEANS">
-    <li><a href="MEMBERS/NEWJEANS_MINJI.html">MINJI</a></li>
-    <li><a href="MEMBERS/NEWJEANS_HANNI.html">HANNI</a></li>
-    <li><a href="MEMBERS/NEWJEANS_DANIELLE.html">DANIELLE</a></li>
-    <li><a href="MEMBERS/NEWJEANS_HAERIN.html">HAERIN</a></li>
-    <li><a href="MEMBERS/NEWJEANS_HYEIN.html">HYEIN</a></li>
-  </ul>
-</li>
-
-<li>
-  <button class="folder-toggle" data-folder="IVE">IVE</button>
-  <ul class="member-list" data-folder="IVE">
-    <li><a href="MEMBERS/IVE_GAEUL.html">GAEUL</a></li>    
-    <li><a href="MEMBERS/IVE_YUJIN.html">YUJIN</a></li>
-    <li><a href="MEMBERS/IVE_REI.html">REI</a></li>
-    <li><a href="MEMBERS/IVE_WONYOUNG.html">WONYOUNG</a></li>
-    <li><a href="MEMBERS/IVE_LIZ.html">LIZ</a></li>
-    <li><a href="MEMBERS/IVE_LEESEO.html">LEESEO</a></li>
-  </ul>
-</li>
-
-<li>
-  <button class="folder-toggle" data-folder="STAYC">STAYC</button>
-  <ul class="member-list" data-folder="STAYC">
-    <li><a href="MEMBERS/STAYC_SUMIN.html">SUMIN</a></li>    
-    <li><a href="MEMBERS/STAYC_SIEUN.html">SIEUN</a></li>
-    <li><a href="MEMBERS/STAYC_ISA.html">ISA</a></li>    
-    <li><a href="MEMBERS/STAYC_SEEUN.html">SEEUN</a></li>
-    <li><a href="MEMBERS/STAYC_YOON.html">YOON</a></li>
-    <li><a href="MEMBERS/STAYC_J.html">J</a></li>
-  </ul>
-</li>
-
-<li>
-  <button class="folder-toggle" data-folder="AESPA">AESPA</button>
-  <ul class="member-list" data-folder="AESPA">
-    <li><a href="MEMBERS/AESPA_KARINA.html">KARINA</a></li>
-    <li><a href="MEMBERS/AESPA_GISELLE.html">GISELLE</a></li>
-    <li><a href="MEMBERS/AESPA_WINTER.html">WINTER</a></li>
-    <li><a href="MEMBERS/AESPA_NINGNING.html">NINGNING</a></li>
-  </ul>
-</li>
-
-<li>
-  <button class="folder-toggle" data-folder="FROMIS">FROMIS</button>
-  <ul class="member-list" data-folder="FROMIS">
-    <li><a href="MEMBERS/FROMIS_SAEROM.html">SAEROM</a></li>
-    <li><a href="MEMBERS/FROMIS_HAYOUNG.html">HAYOUNG</a></li>
-    <li><a href="MEMBERS/FROMIS_GYURI.html">GYURI</a></li>
-    <li><a href="MEMBERS/FROMIS_JIWON.html">JIWON</a></li>
-    <li><a href="MEMBERS/FROMIS_JISUN.html">JISUN</a></li>
-    <li><a href="MEMBERS/FROMIS_SOYEON.html">SOYEON</a></li>
-    <li><a href="MEMBERS/FROMIS_CHAEYOUNG.html">CHAEYOUNG</a></li>
-    <li><a href="MEMBERS/FROMIS_NAKYUNG.html">NAKYUNG</a></li>
-    <li><a href="MEMBERS/FROMIS_JIHEON.html">JIHEON</a></li>
-  </ul>
-</li>
-
-<li>
-  <button class="folder-toggle" data-folder="LOONA">LOONA</button>
-  <ul class="member-list" data-folder="LOONA">
-    <li><a href="MEMBERS/LOONA_VIVI.html">VIVI</a></li>
-    <li><a href="MEMBERS/LOONA_YVES.html">YVES</a></li>    
-    <li><a href="MEMBERS/LOONA_JINSOUL.html">JINSOUL</a></li>
-    <li><a href="MEMBERS/LOONA_HASEUL.html">HASEUL</a></li>
-    <li><a href="MEMBERS/LOONA_KIMLIP.html">KIMLIP</a></li>
-    <li><a href="MEMBERS/LOONA_CHUU.html">CHUU</a></li>
-    <li><a href="MEMBERS/LOONA_HEEJIN.html">HEEJIN</a></li>
-    <li><a href="MEMBERS/LOONA_HYUNJIN.html">HYUNJIN</a></li>
-    <li><a href="MEMBERS/LOONA_GOWON.html">GOWON</a></li>
-    <li><a href="MEMBERS/LOONA_CHOERRY.html">CHOERRY</a></li>
-    <li><a href="MEMBERS/LOONA_OLIVIA.html">OLIVIA</a></li>
-    <li><a href="MEMBERS/LOONA_YEOJIN.html">YEOJIN</a></li>
-  </ul>
-</li>
-
-<li>
-  <button class="folder-toggle" data-folder="ITZY">ITZY</button>
-  <ul class="member-list" data-folder="ITZY">
-    <li><a href="MEMBERS/ITZY_YEJI.html">YEJI</a></li>
-    <li><a href="MEMBERS/ITZY_LIA.html">LIA</a></li>
-    <li><a href="MEMBERS/ITZY_RYUJIN.html">RYUJIN</a></li>
-    <li><a href="MEMBERS/ITZY_CHAERYEONG.html">CHAERYEONG</a></li>
-    <li><a href="MEMBERS/ITZY_YUNA.html">YUNA</a></li>
-  </ul>
-</li>
-
-<li>
-  <button class="folder-toggle" data-folder="IU">IU</button>
-  <ul class="member-list" data-folder="IU">
-    <li><a href="MEMBERS/IU_IU.html">IU</a></li>
-  </ul>
-</li>
-
-<li>
-  <button class="folder-toggle" data-folder="RED VELVET">RED VELVET</button>
-  <ul class="member-list" data-folder="RED VELVET">
-    <li><a href="MEMBERS/RED VELVET_IRENE.html">IRENE</a></li>
-    <li><a href="MEMBERS/RED VELVET_SEULGI.html">SEULGI</a></li>
-    <li><a href="MEMBERS/RED VELVET_WENDY.html">WENDY</a></li>
-    <li><a href="MEMBERS/RED VELVET_JOY.html">JOY</a></li>
-    <li><a href="MEMBERS/RED VELVET_YERI.html">YERI</a></li>
-  </ul>
-</li>
-
-<li>
-  <button class="folder-toggle" data-folder="TWICE">TWICE</button>
-  <ul class="member-list" data-folder="TWICE">
-    <li><a href="MEMBERS/TWICE_NAYEON.html">NAYEON</a></li>
-    <li><a href="MEMBERS/TWICE_JEONGYEON.html">JEONGYEON</a></li>
-    <li><a href="MEMBERS/TWICE_MOMO.html">MOMO</a></li>
-    <li><a href="MEMBERS/TWICE_SANA.html">SANA</a></li>
-    <li><a href="MEMBERS/TWICE_JIHYO.html">JIHYO</a></li>
-    <li><a href="MEMBERS/TWICE_MINA.html">MINA</a></li>
-    <li><a href="MEMBERS/TWICE_DAHYUN.html">DAHYUN</a></li>
-    <li><a href="MEMBERS/TWICE_CHAEYOUNG.html">CHAEYOUNG</a></li>
-    <li><a href="MEMBERS/TWICE_TZUYU.html">TZUYU</a></li>
+  <button class="folder-toggle" data-folder="LIBRARY">LIBRARY</button>
+  <ul class="member-list" data-folder="LIBRARY">
+    <li><a href="library/movies.html">Movies</a></li>
+    <li><a href="library/tv-shows.html">TV Shows</a></li>
+    <li><a href="library/anime.html">Anime</a></li>
+    <li><a href="library/manga.html">Manga</a></li>
+    <li><a href="library/novel.html">Novel</a></li>
+    <li><a href="library/book.html">Book</a></li>
+    <li><a href="library/tools.html">Tools</a></li>
   </ul>
 </li>
     </ul>
@@ -277,6 +144,9 @@ body.loading {
 </div>
 <div class="content-wrapper">
 <div class="hero" id="hero-strip"></div>
+<div class="profile-banner">
+  <img src="header.png" alt="Sagar Salunkhe" class="profile-banner-img">
+</div>
 <div class="about-and-gallery">
 <div class="abgr">
 <div class="about-window win98-style">
@@ -284,20 +154,18 @@ body.loading {
     <h3>About</h3>
 
     <p>
-      This archive is a personal collection of chronologically sorted fansite images. 
-      Every photo is manually dated, though TWICE and ITZY are still 
-      missing accurate dates.
+      This is my personal media library — a collection of movies, TV shows, anime,
+      manga, novels, books, and tools I've gathered and organized over time.
     </p>
 
     <p>
-      I began archiving fansite photos of my favorite groups back in 2021 and have been 
-      collecting and organizing them ever since.
+      Everything is sorted by category with cover art, filters, and a gallery view,
+      making it easy to find and browse whatever I'm looking for.
     </p>
 
     <p>
-      This project was built for fun, as a way to share a photo archiving hobby I started 
-      in my free time. I'm glad I could turn it into something easy to browse, and I hope 
-      others enjoy it as much as I do.
+      Built for fun as a way to keep my collection organized and easy to browse —
+      glad it turned into something genuinely usable, and I hope you enjoy it too.
     </p>
 
     <p>
@@ -323,11 +191,12 @@ body.loading {
     <h3>Usage</h3>
 
     <ul class="usage-list">
-      <li>Use the left sidebar to browse groups and select a member, or search for a specific name.</li>
-      <li>Once you're viewing a member's gallery, you can type a date into the search bar to quickly jump to the closest set of images from that day.</li>
+      <li>Use the left sidebar to browse categories and open a library page, or search for a specific title.</li>
+      <li>Once you're viewing a category's page, you can type a title into the search bar to quickly jump to that entry's cover.</li>
       <li>Use the random button to open a random image from the current gallery.</li>
       <li>Click any image to open the lightbox and view the full resolution version, and use the download button to save it.</li>
       <li>In the lightbox, hold Ctrl and click on an image to open the magnifier, then use your scroll wheel to zoom in and out.</li>
+      <li>Keep an eye out for the cat wandering around the page — it'll chase your cursor if you move it nearby.</li>
     </ul>
 
     <h4 class="usage-subheader">Buttons</h4>
@@ -336,6 +205,7 @@ body.loading {
       <li><strong>Sort by Date:</strong> Toggle between ascending/descending date order.</li>
       <li><strong>Chronological / Recent:</strong> Toggle sorting between manually assigned dates (chronological) or by the most recently saved images. Useful for seeing new additions even if they're from earlier dates.</li>
       <li><strong>Grid / Masonry:</strong> Toggle between uniform grid or natural aspect‑ratio layout.</li>
+      <li><strong>Filter:</strong> Open the filter panel to narrow entries by Status, Genre, or Rating.</li>
     </ul>
   </div>
   </div>
@@ -359,13 +229,6 @@ body.loading {
         <div class="rp-footer-stat" id="stats-footer"></div>
       </div>
 
-<div id="changelog-wrapper">
-  <details id="changelog">
-    <summary>Changelog <span class="caret">&#9656;</span></summary>
-    <ul id="changelog-list"></ul>
-  </details>
-</div>
-
 <script>
 function executeScripts(container) {
   const scripts = container.querySelectorAll("script");
@@ -381,13 +244,6 @@ function executeScripts(container) {
   });
 }
   
-async function loadAuthHTML() {
-  const container = document.getElementById("auth-container");
-  const res = await fetch("auth.html");
-  const html = await res.text();
-  container.innerHTML = html;
-  executeScripts(container);
-}
 async function loadTopbarHTML() {
     const container = document.getElementById("topbar-container");
     const res = await fetch("topbar.html");
@@ -398,22 +254,6 @@ async function loadTopbarHTML() {
 </script>
 
 
-
-<script>
-fetch("changelog.txt")
-  .then(response => response.text())
-  .then(text => {
-    const ul = document.getElementById("changelog-list");
-    text.split("\n").forEach(line => {
-      if (line.trim()) {
-        const li = document.createElement("li");
-        li.textContent = line.trim();
-        ul.appendChild(li);
-      }
-    });
-  })
-  .catch(err => console.error("Error loading changelog:", err));
-</script>
 
 <script>
 const button = document.getElementById("feedback-btn");
@@ -445,11 +285,6 @@ if (button) {
 </script>
 </div>
 </div>
-<div class="update-history">
-  <h3>Update Log</h3>
-  <div class="update-list"></div>
-</div>
-
 <script>
     const discordText = document.getElementById('discordText');
   const copyMessage = document.getElementById('copyMessage');
@@ -463,50 +298,33 @@ if (button) {
       }, 1500);
     });
   });
-fetch('update_history.json')
-  .then(res => res.json())
-  .then(history => {
-    const container = document.querySelector('.update-list');
-    container.innerHTML = '';
-
-    history.slice().reverse().forEach(update => {
-
-      const timestampDiv = document.createElement('div');
-      timestampDiv.className = 'update-timestamp';
-
-      const formattedTotal = update.total
-        ? `[+${update.total.toLocaleString()}]`
-        : '';
-
-      timestampDiv.textContent = `${update.timestamp} ${formattedTotal}`;
-      container.appendChild(timestampDiv);
-
-      update.groups.forEach(group => {
-        const groupDiv = document.createElement('div');
-        groupDiv.className = 'update-entry';
-
-        const members = group.members
-          .map(m => `${m.name} +${m.count}`)
-          .join(', ');
-
-        groupDiv.textContent = `${group.name} (+${group.total}) | ${members}`;
-        container.appendChild(groupDiv);
-      });
-
-      const sep = document.createElement('hr');
-      sep.style.margin = '8px 0';
-      container.appendChild(sep);
-    });
-  })
-  .catch(err => console.error('Failed to load update history:', err));
 </script>
 </div>
 </div>
+<script src="library-data.js"></script>
 <script>
-  fetch('recent_uploads.html')
-  .then(res => res.text())
-  .then(html => {
-    document.querySelector('.recent-gallery-box').innerHTML = html;
+  const RECENT_CATEGORY_PATHS = {
+    "Movies":        "movies.html",
+    "TV Shows":      "tv-shows.html",
+    "Anime":         "anime.html",
+    "Manga":         "manga.html",
+    "Novel":         "novel.html",
+    "Book":          "book.html",
+    "Tools":         "tools.html"
+  };
+
+  const RECENT_GALLERY_LIMIT = 30;
+
+  loadAllLibraryEntries()
+  .then(data => {
+    const entries = data.entries
+      .filter(e => e.cover)
+      .sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded))
+      .slice(0, RECENT_GALLERY_LIMIT);
+
+    document.querySelector('.recent-gallery-box').innerHTML = entries.map(e =>
+      `<a href="library/${RECENT_CATEGORY_PATHS[e.category]}"><img src="${e.cover}" alt="${e.title}" loading="lazy"></a>`
+    ).join('');
   })
   .catch(err => {
     document.querySelector('.recent-gallery-box').innerText = 'Failed to load recent uploads.';
@@ -604,13 +422,10 @@ document.documentElement.classList.add('loading');
 document.body.classList.add('loading');  
 window.addEventListener('DOMContentLoaded', async () => {
   await loadTopbarHTML();
-  await loadAuthHTML();
-  
+
   setupSidebarToggles();
   setupSidebarSearch();
   buildHero();
-  checkLogin();
-  loadFavorites();
 
 await Promise.race([
     document.fonts.ready,
@@ -638,12 +453,12 @@ setTimeout(() => {
 
 
 <script>
- 
-fetch('stats.json')
-  .then(r => r.json())
-  .then(s => {
+loadAllLibraryEntries()
+  .then(data => {
+    const entries = data.entries || [];
+    const categories = new Set(entries.map(e => e.category)).size;
     document.getElementById('stats-footer').innerHTML =
-      `Last updated: ${s.last_updated}<br>${s.groups} groups · ${s.members} members · ${s.images.toLocaleString()} images`;
+      `${categories} categories · ${entries.length.toLocaleString()} entries`;
   }).catch(() => {});
 </script>
 <script>
@@ -659,154 +474,134 @@ try {
   function toggleDarkMode() {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    const mode = isDark ? "dark" : "light";
-    new Image().src = `https://terril.duckdns.org/event/darkmode-toggle/${mode}`;
   }
 } catch(e) {}
 </script>
 <script>
-  function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
+const LIBRARY_CATEGORY_PATHS = {
+  "Movies":        "movies.html",
+  "TV Shows":      "tv-shows.html",
+  "Anime":         "anime.html",
+  "Manga":         "manga.html",
+  "Novel":         "novel.html",
+  "Book":          "book.html",
+  "Tools":         "tools.html"
+};
+
+const HERO_COUNT = 10;
+const HERO_CROSSFADE_INTERVAL = 4000;
+const HERO_TITLE_MAX = 18;
+
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  return array;
+  return arr;
 }
 
-function toThumb(rel) {
-  return rel.replace(/([^/]+)\/([^/]+)\//, '$1/$2/thumbs/');
+function shortenHeroTitle(title) {
+  if (!title || title.length <= HERO_TITLE_MAX) return title;
+  return title.slice(0, Math.ceil(title.length / 2)) + '…';
 }
 
+function buildHeroCell(strip, entries) {
+  let queue = shuffle(entries);
+  let index = 0;
 
-const HERO_COUNT    = 10;
-const HERO_OVERRIDE = []; // e.g. ['WONYOUNG', 'KARINA', 'MINA']
-const BASE_URL      = 'https://terril.duckdns.org/';
+  function nextEntry() {
+    const entry = queue[index];
+    index++;
+    if (index >= queue.length) {
+      queue = shuffle(entries);
+      index = 0;
+    }
+    return entry;
+  }
+
+  let current = nextEntry();
+
+  const cell = document.createElement('div');
+  cell.className = 'hero-cell';
+  cell.style.cursor = 'pointer';
+  cell.addEventListener('click', () => {
+    const path = LIBRARY_CATEGORY_PATHS[current.category];
+    window.location.href = `library/${path}`;
+  });
+
+  const bg = document.createElement('div');
+  bg.className = 'hero-cell-bg';
+  cell.appendChild(bg);
+
+  const imgA = document.createElement('img');
+  const imgB = document.createElement('img');
+  imgA.className = 'hero-img visible';
+  imgB.className = 'hero-img hidden';
+  imgA.src = current.cover;
+  imgA.alt = current.category;
+  cell.appendChild(imgA);
+  cell.appendChild(imgB);
+
+  const badge = document.createElement('div');
+  badge.className = 'hero-badge';
+  badge.textContent = current.category;
+  cell.appendChild(badge);
+
+  const cap = document.createElement('div');
+  cap.className = 'hero-caption';
+  cap.innerHTML = `<div class="hero-name" title="${current.title}">${shortenHeroTitle(current.title)}</div>`;
+  cell.appendChild(cap);
+
+  const nameEl = cap.querySelector('.hero-name');
+  let showingA = true;
+
+  function crossfade() {
+    const next = nextEntry();
+    const preload = new Image();
+    preload.src = next.cover;
+
+    preload.decode().catch(() => {}).then(() => {
+      const targetImg = showingA ? imgB : imgA;
+      const fromImg = showingA ? imgA : imgB;
+
+      targetImg.src = next.cover;
+      targetImg.alt = next.category;
+
+      fromImg.classList.remove('visible');
+      fromImg.classList.add('hidden');
+      targetImg.classList.remove('hidden');
+      targetImg.classList.add('visible');
+
+      badge.textContent = next.category;
+      nameEl.textContent = shortenHeroTitle(next.title);
+      nameEl.title = next.title;
+
+      current = next;
+      showingA = !showingA;
+    });
+  }
+
+  // Random offset so cells don't all crossfade in sync.
+  const delay = Math.random() * HERO_CROSSFADE_INTERVAL;
+  setTimeout(() => {
+    setInterval(crossfade, HERO_CROSSFADE_INTERVAL);
+  }, delay);
+
+  strip.appendChild(cell);
+}
 
 async function buildHero() {
   const strip = document.getElementById('hero-strip');
 
   try {
-    const hist   = await fetch('update_history.json').then(r => r.json());
-    const latest = hist[hist.length - 1];
+    const data = await loadAllLibraryEntries();
+    const entries = data.entries.filter(e => e.cover);
 
-    const members = [];
-    latest.groups.forEach(g => g.members.forEach(m =>
-      members.push({ name: m.name, group: g.name, count: m.count })
-    ));
-
-    members.sort((a, b) => b.count - a.count);
-
-    const top = (HERO_OVERRIDE.length
-      ? HERO_OVERRIDE.map(n => members.find(m => m.name === n)).filter(Boolean)
-      : members
-    ).slice(0, HERO_COUNT);
-
-    strip.style.gridTemplateColumns = `repeat(${top.length}, 1fr)`;
-
-    const latestImages = await fetch('member_latest_images.json').then(r => r.json());
-
-    top.forEach(member => {
-      const key = `${member.group}/${member.name}`;
-      const imgs = latestImages[key] || [];
-
-      const rel = imgs.length ? imgs[Math.floor(Math.random() * imgs.length)] : null;
-      const src = rel ? BASE_URL + rel : null;
-
-      const cell = document.createElement('div');
-      cell.className = 'hero-cell';
-      cell.style.cursor = 'pointer';
-      cell.addEventListener('click', () => {
-        window.location.href = `MEMBERS/${member.group.replace(/\s+/g,' ')}_${member.name}.html`;
-      });
-
-      const bg = document.createElement('div');
-      bg.className = 'hero-cell-bg';
-      cell.appendChild(bg);
-
-      if (imgs.length) {
-        let queue = shuffle([...imgs]);
-        let index = 0;
-
-        function nextImage() {
-          const rel = queue[index];
-          index++;
-
-          if (index >= queue.length) {
-            queue = shuffle([...imgs]);
-            index = 0;
-          }
-
-          return BASE_URL + toThumb(rel);
-        }
-
-        const imgA = document.createElement('img');
-        const imgB = document.createElement('img');
-
-        imgA.className = 'hero-img visible';
-        imgB.className = 'hero-img hidden';
-
-        imgA.alt = member.name;
-        imgB.alt = member.name;
-
-        cell.appendChild(imgA);
-        cell.appendChild(imgB);
-
-        imgA.src = nextImage();
-
-        let showingA = true;
-
-        function crossfade() {
-          const nextSrc = nextImage();
-
-          const preload = new Image();
-          preload.src = nextSrc;
-
-          preload.decode().then(() => {
-            if (showingA) {
-              imgB.src = nextSrc;
-
-              imgA.classList.remove('visible');
-              imgA.classList.add('hidden');
-
-              imgB.classList.remove('hidden');
-              imgB.classList.add('visible');
-            } else {
-              imgA.src = nextSrc;
-
-              imgA.classList.remove('hidden');
-              imgA.classList.add('visible');
-
-              imgB.classList.remove('visible');
-              imgB.classList.add('hidden');
-            }
-
-            showingA = !showingA;
-          });
-        }
-
-        // Random offset
-        const delay = Math.random() * 1000;
-
-        setTimeout(() => {
-          setInterval(crossfade, 4000);
-        }, delay);
-      }
-
-      const badge = document.createElement('div');
-      badge.className = 'hero-badge';
-      badge.textContent = member.group;
-      cell.appendChild(badge);
-
-      const cap = document.createElement('div');
-      cap.className = 'hero-caption';
-      cap.innerHTML = `
-        <div class="hero-name">${member.name}</div>
-        <div class="hero-count">+${member.count.toLocaleString()} this update</div>
-      `;
-      cell.appendChild(cap);
-
-      strip.appendChild(cell);
-    });
+    strip.innerHTML = '';
+    for (let i = 0; i < HERO_COUNT; i++) {
+      buildHeroCell(strip, entries);
+    }
 
   } catch (e) {
     console.error('Hero build failed:', e);
@@ -814,5 +609,6 @@ async function buildHero() {
   }
 }
 </script>
+<script src="oneko.js" data-cat="/oneko.gif"></script>
 </body>
 </html>

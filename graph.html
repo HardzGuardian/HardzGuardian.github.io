@@ -2,24 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Member Activity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Library Graph</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="library_graphs.css">
   <style>
+    :root {
+      --gold: #d4af37;
+      --border: #2a2a2a;
+      --bg-surface: #161616;
+      --text-primary: #e8e3da;
+      --text-secondary: #999;
+    }
     html, body {
       margin: 0;
       padding: 0;
-      background: #121212;
-      width: 100%;
-      overflow-x: hidden; /* prevent horizontal scroll */
+      background: #0e0e0e;
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
     }
-
-    object {
-      display: block;
-      max-width: 100%;   /* fill the viewport width */
-      height: auto;   /* maintain aspect ratio */
+    .graph-page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
-  <object type="image/svg+xml" data="member_activity.svg"></object>
+  <div class="graph-page">
+    <div class="graph-header">Graph</div>
+    <div id="library-graph-container"></div>
+  </div>
+  <script src="library-data.js"></script>
+  <script src="library_graphs.js?v=99"></script>
+  <script>
+    renderLibraryGraphs('library-graph-container');
+  </script>
 </body>
 </html>

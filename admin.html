@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+
+<script>
+try {
+  let theme = localStorage.getItem('theme');
+  if (!theme) {
+    theme = 'dark';
+    localStorage.setItem('theme', theme);
+  }
+  document.documentElement.classList.toggle('dark', theme === 'dark');
+} catch(e) {}
+</script>
+
+<link rel="stylesheet" href="index_style.css">
+<link rel="stylesheet" href="library.css">
+<link rel="stylesheet" href="admin.css">
+<script src="library.js" defer></script>
+<script src="admin-import.js" defer></script>
+
+<title>Library Admin</title>
+</head>
+<body style="margin:0;">
+
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <a href="index.html" class="admin-sidebar-back"><i class="ti ti-arrow-left"></i>Back to Library</a>
+    <div class="admin-sidebar-title">Library Admin</div>
+    <div class="admin-dirty-badge" id="admin-dirty-badge"></div>
+    <nav class="admin-nav">
+      <button type="button" class="admin-nav-item active" data-page="dashboard"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
+      <button type="button" class="admin-nav-item" data-page="entries"><i class="ti ti-list-details"></i>Entries</button>
+      <button type="button" class="admin-nav-item" data-page="entry"><i class="ti ti-square-rounded-plus"></i>Add / Edit</button>
+      <button type="button" class="admin-nav-item" data-page="export"><i class="ti ti-file-export"></i>Export</button>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+
+    <section class="admin-page active" data-page="dashboard">
+      <h1>Dashboard</h1>
+      <div class="admin-sub">Overview of <code>library.json</code> — switch sections from the sidebar to add, edit, or export entries.</div>
+
+      <div class="admin-stats-row" id="admin-stats-row"></div>
+
+      <div class="admin-card">
+        <h3><i class="ti ti-chart-bar"></i>Entries by Category</h3>
+        <div class="admin-cat-bars" id="admin-cat-bars"></div>
+      </div>
+    </section>
+
+    <section class="admin-page" data-page="entries">
+      <h1>Entries</h1>
+      <div class="admin-sub">Browse, search, sort, and manage every entry in the library.</div>
+
+      <div class="admin-card accent-list">
+        <div class="admin-toolbar">
+          <input type="text" id="entry-search" placeholder="Search by title…">
+          <select id="entry-filter-cat">
+            <option value="">All Categories</option>
+          </select>
+          <select id="entry-filter-origin">
+            <option value="">All Origins</option>
+            <option value="Korean">Korean</option>
+            <option value="Chinese">Chinese</option>
+            <option value="English">English</option>
+          </select>
+          <button type="button" class="admin-btn" id="bulk-delete-btn" style="display:none;">Delete Selected (<span id="bulk-delete-count">0</span>)</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th class="admin-th-check"><input type="checkbox" id="entry-select-all"></th>
+                <th></th>
+                <th data-sort="title">Title</th>
+                <th data-sort="category">Category</th>
+                <th data-sort="status">Status</th>
+                <th data-sort="rating">Rating</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="entry-table-body"></tbody>
+          </table>
+          <div class="admin-empty" id="entry-table-empty" style="display:none;">No entries yet.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-page" data-page="entry">
+      <h1 id="entry-page-title">Add Entry</h1>
+      <div class="admin-sub">Paste a source link to auto-fill, or fill in the details manually.</div>
+
+      <div class="admin-card accent-import">
+        <h3><i class="ti ti-link"></i>Import from URL</h3>
+        <div class="admin-import-row">
+          <input type="text" id="f-import-url" placeholder="Paste a MyAnimeList anime/manga link, Google Books link, or ISBN…">
+          <button type="button" class="admin-btn primary" id="f-import-btn">Fetch</button>
+        </div>
+        <div class="admin-import-status" id="import-status">
+          Auto-fill works for MyAnimeList (anime/manga) and Google Books (link or ISBN). Other sources (MangaUpdates, MyDramaList, AniList, Anime-Planet, TMDB...) aren't auto-fillable yet — paste the cover image URL and details manually below.
+        </div>
+      </div>
+
+      <div class="admin-card accent-form">
+        <h3><i class="ti ti-square-rounded-plus"></i><span id="form-heading">Add Entry</span></h3>
+        <form id="entry-form">
+          <div class="admin-form-grid">
+            <div class="admin-form-section-label">Basic Info</div>
+            <div class="admin-field">
+              <label for="f-category">Category</label>
+              <select id="f-category" required></select>
+            </div>
+            <div class="admin-field">
+              <label for="f-title">Title</label>
+              <input type="text" id="f-title" required>
+            </div>
+
+            <div class="admin-field full">
+              <div class="admin-cover-row">
+                <div class="admin-field">
+                  <label for="f-cover">Cover Image URL</label>
+                  <input type="text" id="f-cover" placeholder="https://...">
+                </div>
+                <div class="admin-cover-preview" id="f-cover-preview-wrap">
+                  <img id="f-cover-preview" alt="" style="display:none;">
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-field full">
+              <label for="f-description">Description</label>
+              <textarea id="f-description"></textarea>
+            </div>
+
+            <div class="admin-form-section-label">Classification</div>
+            <div class="admin-field">
+              <label for="f-genres">Genres (comma separated)</label>
+              <input type="text" id="f-genres" placeholder="romance, action">
+            </div>
+            <div class="admin-field">
+              <label for="f-status">Status</label>
+              <select id="f-status">
+                <option value="Plan">Plan</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Dropped">Dropped</option>
+              </select>
+            </div>
+
+            <div class="admin-field">
+              <label for="f-rating">Rating (0-10)</label>
+              <input type="number" id="f-rating" min="0" max="10" step="0.01">
+            </div>
+            <div class="admin-field">
+              <label for="f-link">Link</label>
+              <input type="text" id="f-link" placeholder="https://...">
+            </div>
+
+            <div class="admin-form-section-label">Progress &amp; Notes</div>
+            <div class="admin-field" id="f-progress-current-wrap">
+              <label id="f-progress-current-label" for="f-progress-current">Progress (current)</label>
+              <input type="number" id="f-progress-current" min="0" step="1">
+            </div>
+            <div class="admin-field" id="f-progress-total-wrap">
+              <label id="f-progress-total-label" for="f-progress-total">Progress (total)</label>
+              <input type="number" id="f-progress-total" min="0" step="1">
+            </div>
+
+            <div class="admin-field">
+              <label for="f-date-added">Date Added</label>
+              <input type="date" id="f-date-added">
+            </div>
+
+            <div class="admin-field full">
+              <label for="f-notes">Notes</label>
+              <textarea id="f-notes"></textarea>
+            </div>
+          </div>
+
+          <div class="admin-btn-row">
+            <button type="submit" class="admin-btn primary" id="f-submit">Add Entry</button>
+            <button type="button" class="admin-btn" id="f-duplicate" style="display:none;">Duplicate</button>
+            <button type="button" class="admin-btn" id="f-cancel" style="display:none;">Cancel Edit</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="admin-page" data-page="export">
+      <h1>Export</h1>
+      <div class="admin-sub">Download the updated <code>library.json</code>, replace the file in the project, then commit and push to update the live site.</div>
+
+      <div class="admin-card accent-export">
+        <h3><i class="ti ti-file-export"></i>library.json</h3>
+        <p style="font-size:12px; color: var(--text-secondary); margin: 0 0 4px;">
+          Changes made here live in your browser only until you export and commit the file.
+        </p>
+        <div class="admin-btn-row">
+          <button type="button" class="admin-btn" id="reload-btn">Reload from library.json</button>
+          <button type="button" class="admin-btn primary" id="export-btn">Export library.json</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+let adminData = null;
+let editingId = null;
+let isDirty = false;
+let sortField = 'title';
+let sortDir = 'asc';
+let selectedIds = new Set();
+let statusTouched = false;
+
+function switchPage(page) {
+  document.querySelectorAll('.admin-nav-item').forEach(btn => btn.classList.toggle('active', btn.dataset.page === page));
+  document.querySelectorAll('.admin-page').forEach(sec => sec.classList.toggle('active', sec.dataset.page === page));
+}
+
+function markDirty() {
+  isDirty = true;
+  document.getElementById('admin-dirty-badge').textContent = '● Unsaved changes';
+}
+
+function clearDirty() {
+  isDirty = false;
+  document.getElementById('admin-dirty-badge').textContent = '';
+}
+
+function renderCatBars() {
+  const container = document.getElementById('admin-cat-bars');
+  const entries = adminData.entries;
+  const counts = adminData.categories.map(cat => entries.filter(e => e.category === cat).length);
+  const max = Math.max(1, ...counts);
+
+  container.innerHTML = adminData.categories.map((cat, i) => `
+    <div class="admin-cat-bar-row">
+      <span class="admin-cat-bar-label">${escapeHtml(cat)}</span>
+      <div class="admin-cat-bar-track"><div class="admin-cat-bar-fill" style="width:${Math.round((counts[i] / max) * 100)}%"></div></div>
+      <span class="admin-cat-bar-count">${counts[i]}</span>
+    </div>
+  `).join('');
+}
+
+function refreshDashboard() {
+  renderAdminStats();
+  renderCatBars();
+}
+
+function renderAdminStats() {
+  const row = document.getElementById('admin-stats-row');
+  const entries = adminData.entries;
+  const countByStatus = (status) => entries.filter(e => e.status === status).length;
+
+  const stats = [
+    { label: 'Total Entries', value: entries.length, accent: '' },
+    { label: 'Completed', value: countByStatus('Completed'), accent: 'completed' },
+    { label: 'In Progress', value: countByStatus('In Progress'), accent: 'progress' },
+    { label: 'On Hold', value: countByStatus('On Hold'), accent: 'hold' },
+    { label: 'Plan', value: countByStatus('Plan'), accent: 'plan' },
+    { label: 'Categories', value: adminData.categories.length, accent: '' }
+  ];
+
+  row.innerHTML = stats.map(s => `
+    <div class="admin-stat-card" ${s.accent ? `data-accent="${s.accent}"` : ''}>
+      <div class="admin-stat-value">${s.value}</div>
+      <div class="admin-stat-label">${escapeHtml(s.label)}</div>
+    </div>
+  `).join('');
+}
+
+function entryThumbHtml(entry) {
+  if (entry.cover) {
+    return `<img src="${escapeHtml(entry.cover)}" alt="" loading="lazy">`;
+  }
+  return '<i class="ti ti-photo"></i>';
+}
+
+function categoryOptionsHtml(categories) {
+  return categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+}
+
+function updateCoverPreview() {
+  const url = document.getElementById('f-cover').value.trim();
+  const img = document.getElementById('f-cover-preview');
+  if (url) {
+    img.src = url;
+    img.style.display = '';
+  } else {
+    img.removeAttribute('src');
+    img.style.display = 'none';
+  }
+}
+
+function setImportStatus(text, type) {
+  const el = document.getElementById('import-status');
+  el.textContent = text;
+  el.classList.remove('error', 'success');
+  if (type) el.classList.add(type);
+}
+
+async function handleImportFromUrl() {
+  const input = document.getElementById('f-import-url').value;
+  const btn = document.getElementById('f-import-btn');
+  btn.disabled = true;
+  setImportStatus('Looking up…');
+
+  try {
+    const result = await window.tryImportFromUrl(input);
+
+    if (result.unsupported) {
+      setImportStatus(`No auto-fill available for ${result.sourceName} — paste the cover image URL and other details manually below.`);
+      return;
+    }
+
+    const { source, entry } = result;
+    const filled = [];
+
+    const setIfEmpty = (id, value) => {
+      if (value === undefined || value === null || value === '') return;
+      const field = document.getElementById(id);
+      if (field.value.trim() !== '') return;
+      field.value = value;
+      filled.push(id);
+    };
+
+    setIfEmpty('f-title', entry.title);
+    setIfEmpty('f-cover', entry.cover);
+    setIfEmpty('f-description', entry.description);
+    if (entry.genres && entry.genres.length && document.getElementById('f-genres').value.trim() === '') {
+      document.getElementById('f-genres').value = entry.genres.join(', ');
+      filled.push('f-genres');
+    }
+    if (entry.status && !statusTouched) {
+      document.getElementById('f-status').value = entry.status;
+      filled.push('f-status');
+    }
+    if (entry.rating !== null && entry.rating !== undefined) setIfEmpty('f-rating', entry.rating);
+    setIfEmpty('f-link', input.trim());
+    if (entry.progress) {
+      setIfEmpty('f-progress-total', entry.progress.total);
+    }
+
+    updateCoverPreview();
+
+    setImportStatus(
+      filled.length
+        ? `Fetched from ${source} — filled ${filled.length} empty field${filled.length === 1 ? '' : 's'}.`
+        : `Fetched from ${source}, but all fields already had values.`,
+      'success'
+    );
+  } catch (err) {
+    setImportStatus(err.message || 'Lookup failed.', 'error');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function updateProgressFieldsVisibility() {
+  const cat = document.getElementById('f-category').value;
+  const cfg = CATEGORY_CONFIG[cat] || {};
+  const curWrap = document.getElementById('f-progress-current-wrap');
+  const totWrap = document.getElementById('f-progress-total-wrap');
+
+  if (cfg.progressLabel) {
+    curWrap.style.display = '';
+    totWrap.style.display = '';
+    document.getElementById('f-progress-current-label').textContent = `${cfg.progressLabel} (current)`;
+    document.getElementById('f-progress-total-label').textContent = `${cfg.progressLabel} (total)`;
+  } else {
+    curWrap.style.display = 'none';
+    totWrap.style.display = 'none';
+  }
+
+  const statusSelect = document.getElementById('f-status');
+  Array.from(statusSelect.options).forEach(opt => {
+    opt.textContent = getStatusLabel(cat, opt.value);
+  });
+}
+
+function resetForm() {
+  editingId = null;
+  statusTouched = false;
+  document.getElementById('entry-form').reset();
+  document.getElementById('entry-page-title').textContent = 'Add Entry';
+  document.getElementById('form-heading').textContent = 'Add Entry';
+  document.getElementById('f-submit').textContent = 'Add Entry';
+  document.getElementById('f-cancel').style.display = 'none';
+  document.getElementById('f-duplicate').style.display = 'none';
+  document.getElementById('f-date-added').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('f-import-url').value = '';
+  setImportStatus('Auto-fill works for MyAnimeList (anime/manga) and Google Books (link or ISBN). Other sources (MangaUpdates, MyDramaList, AniList, Anime-Planet, TMDB...) aren\'t auto-fillable yet — paste the cover image URL and details manually below.');
+  updateProgressFieldsVisibility();
+  updateCoverPreview();
+}
+
+function fillFormFromEntry(entry) {
+  statusTouched = true;
+  document.getElementById('f-category').value = entry.category;
+  document.getElementById('f-title').value = entry.title || '';
+  document.getElementById('f-cover').value = entry.cover || '';
+  document.getElementById('f-description').value = entry.description || '';
+  document.getElementById('f-genres').value = (entry.genres || []).join(', ');
+  document.getElementById('f-status').value = entry.status || 'Plan';
+  document.getElementById('f-rating').value = (entry.rating === null || entry.rating === undefined) ? '' : entry.rating;
+  document.getElementById('f-link').value = entry.link || '';
+  document.getElementById('f-date-added').value = entry.dateAdded || '';
+  document.getElementById('f-notes').value = entry.notes || '';
+  document.getElementById('f-progress-current').value = entry.progress ? (entry.progress.current ?? '') : '';
+  document.getElementById('f-progress-total').value = entry.progress ? (entry.progress.total ?? '') : '';
+  updateProgressFieldsVisibility();
+  updateCoverPreview();
+}
+
+function editEntry(id) {
+  const entry = adminData.entries.find(e => e.id === id);
+  if (!entry) return;
+  editingId = id;
+  fillFormFromEntry(entry);
+  document.getElementById('entry-page-title').textContent = `Edit: ${entry.title}`;
+  document.getElementById('form-heading').textContent = `Edit: ${entry.title}`;
+  document.getElementById('f-submit').textContent = 'Save Changes';
+  document.getElementById('f-cancel').style.display = '';
+  document.getElementById('f-duplicate').style.display = '';
+  switchPage('entry');
+}
+
+function duplicateEntry(id) {
+  const entry = adminData.entries.find(e => e.id === id);
+  if (!entry) return;
+  const copy = JSON.parse(JSON.stringify(entry));
+  copy.title = `${copy.title} (Copy)`;
+  copy.id = slugify(`${copy.category}-${copy.title}-${Date.now()}`);
+  adminData.entries.push(copy);
+  markDirty();
+  renderEntryTable();
+}
+
+function deleteEntry(id) {
+  const entry = adminData.entries.find(e => e.id === id);
+  if (!entry) return;
+  if (!confirm(`Delete "${entry.title}"?`)) return;
+  adminData.entries = adminData.entries.filter(e => e.id !== id);
+  selectedIds.delete(id);
+  if (editingId === id) resetForm();
+  markDirty();
+  renderEntryTable();
+}
+
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function updateSortIndicators() {
+  document.querySelectorAll('.admin-table th[data-sort]').forEach(th => {
+    const arrow = th.querySelector('.sort-arrow');
+    if (arrow) arrow.remove();
+    th.classList.toggle('sorted', th.dataset.sort === sortField);
+    if (th.dataset.sort === sortField) {
+      const span = document.createElement('span');
+      span.className = 'sort-arrow';
+      span.textContent = sortDir === 'asc' ? '▲' : '▼';
+      th.appendChild(span);
+    }
+  });
+}
+
+function updateBulkBar() {
+  document.getElementById('bulk-delete-count').textContent = selectedIds.size;
+  document.getElementById('bulk-delete-btn').style.display = selectedIds.size ? '' : 'none';
+}
+
+function renderEntryTable() {
+  refreshDashboard();
+
+  const tbody = document.getElementById('entry-table-body');
+  const emptyEl = document.getElementById('entry-table-empty');
+  tbody.innerHTML = '';
+
+  const search = document.getElementById('entry-search').value.trim().toLowerCase();
+  const catFilter = document.getElementById('entry-filter-cat').value;
+  const originFilter = document.getElementById('entry-filter-origin').value;
+
+  const entries = adminData.entries.filter(e => {
+    if (catFilter && e.category !== catFilter) return false;
+    if (originFilter && !(e.genres || []).includes(originFilter)) return false;
+    if (search && !e.title.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  entries.sort((a, b) => {
+    let av = a[sortField];
+    let bv = b[sortField];
+    if (sortField === 'rating') {
+      av = (av === null || av === undefined) ? -1 : av;
+      bv = (bv === null || bv === undefined) ? -1 : bv;
+    } else {
+      av = (av || '').toString().toLowerCase();
+      bv = (bv || '').toString().toLowerCase();
+    }
+    if (av < bv) return sortDir === 'asc' ? -1 : 1;
+    if (av > bv) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  if (!entries.length) {
+    emptyEl.textContent = adminData.entries.length ? 'No entries match your search/filter.' : 'No entries yet.';
+    emptyEl.style.display = '';
+  } else {
+    emptyEl.style.display = 'none';
+  }
+
+  entries.forEach(entry => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="admin-th-check"><input type="checkbox" data-id="${escapeHtml(entry.id)}" ${selectedIds.has(entry.id) ? 'checked' : ''}></td>
+      <td><div class="admin-entry-thumb">${entryThumbHtml(entry)}</div></td>
+      <td class="admin-td-title">${escapeHtml(entry.title)}</td>
+      <td>${escapeHtml(entry.category)}</td>
+      <td>${statusBadgeHtml(entry.status, entry.category)}</td>
+      <td>${(entry.rating === null || entry.rating === undefined) ? '—' : entry.rating}</td>
+      <td class="admin-td-actions">
+        <button type="button" data-action="edit">Edit</button>
+        <button type="button" data-action="duplicate">Duplicate</button>
+        <button type="button" data-action="delete" class="danger">Delete</button>
+      </td>
+    `;
+    tr.querySelector('[data-action="edit"]').addEventListener('click', () => editEntry(entry.id));
+    tr.querySelector('[data-action="duplicate"]').addEventListener('click', () => duplicateEntry(entry.id));
+    tr.querySelector('[data-action="delete"]').addEventListener('click', () => deleteEntry(entry.id));
+    tr.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+      if (e.target.checked) selectedIds.add(entry.id);
+      else selectedIds.delete(entry.id);
+      updateBulkBar();
+    });
+    tbody.appendChild(tr);
+  });
+
+  updateSortIndicators();
+  updateBulkBar();
+}
+
+function buildEntryFromForm() {
+  const category = document.getElementById('f-category').value;
+  const title = document.getElementById('f-title').value.trim();
+  const cfg = CATEGORY_CONFIG[category] || {};
+
+  const genres = document.getElementById('f-genres').value
+    .split(',')
+    .map(g => g.trim())
+    .filter(Boolean);
+
+  const ratingRaw = document.getElementById('f-rating').value;
+  const rating = ratingRaw === '' ? null : parseFloat(ratingRaw);
+
+  const entry = {
+    id: editingId || slugify(`${category}-${title}-${Date.now()}`),
+    category,
+    title,
+    cover: document.getElementById('f-cover').value.trim(),
+    description: document.getElementById('f-description').value.trim(),
+    genres,
+    status: document.getElementById('f-status').value,
+    rating,
+    notes: document.getElementById('f-notes').value.trim(),
+    link: document.getElementById('f-link').value.trim(),
+    dateAdded: document.getElementById('f-date-added').value
+  };
+
+  if (cfg.progressLabel) {
+    const curRaw = document.getElementById('f-progress-current').value;
+    const totRaw = document.getElementById('f-progress-total').value;
+    if (curRaw !== '' || totRaw !== '') {
+      entry.progress = {
+        current: curRaw === '' ? 0 : parseInt(curRaw, 10),
+        total: totRaw === '' ? 0 : parseInt(totRaw, 10)
+      };
+    }
+  }
+
+  return entry;
+}
+
+function exportLibrary() {
+  const blob = new Blob([JSON.stringify(adminData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'library.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function initAdmin() {
+  adminData = await loadLibraryData();
+
+  document.querySelectorAll('.admin-nav-item').forEach(btn => {
+    btn.addEventListener('click', () => switchPage(btn.dataset.page));
+  });
+
+  const categorySelect = document.getElementById('f-category');
+  categorySelect.innerHTML = categoryOptionsHtml(adminData.categories);
+  categorySelect.addEventListener('change', updateProgressFieldsVisibility);
+
+  const filterCatSelect = document.getElementById('entry-filter-cat');
+  filterCatSelect.innerHTML = '<option value="">All Categories</option>' + categoryOptionsHtml(adminData.categories);
+  filterCatSelect.addEventListener('change', renderEntryTable);
+  document.getElementById('entry-filter-origin').addEventListener('change', renderEntryTable);
+  document.getElementById('entry-search').addEventListener('input', renderEntryTable);
+
+  document.querySelectorAll('.admin-table th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const field = th.dataset.sort;
+      if (sortField === field) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortField = field;
+        sortDir = 'asc';
+      }
+      renderEntryTable();
+    });
+  });
+
+  document.getElementById('entry-select-all').addEventListener('change', (e) => {
+    document.querySelectorAll('#entry-table-body input[type="checkbox"]').forEach(cb => {
+      cb.checked = e.target.checked;
+      if (e.target.checked) selectedIds.add(cb.dataset.id);
+      else selectedIds.delete(cb.dataset.id);
+    });
+    updateBulkBar();
+  });
+
+  document.getElementById('bulk-delete-btn').addEventListener('click', () => {
+    if (!selectedIds.size) return;
+    if (!confirm(`Delete ${selectedIds.size} selected entr${selectedIds.size === 1 ? 'y' : 'ies'}?`)) return;
+    adminData.entries = adminData.entries.filter(e => !selectedIds.has(e.id));
+    if (editingId && selectedIds.has(editingId)) resetForm();
+    selectedIds.clear();
+    markDirty();
+    renderEntryTable();
+  });
+
+  document.getElementById('f-cover').addEventListener('input', updateCoverPreview);
+  document.getElementById('f-status').addEventListener('change', () => { statusTouched = true; });
+  document.getElementById('f-import-btn').addEventListener('click', handleImportFromUrl);
+
+  document.getElementById('f-duplicate').addEventListener('click', () => {
+    if (!editingId) return;
+    duplicateEntry(editingId);
+    resetForm();
+    switchPage('entries');
+  });
+
+  resetForm();
+  renderEntryTable();
+
+  document.getElementById('entry-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const entry = buildEntryFromForm();
+    if (!entry.title) return;
+
+    if (editingId) {
+      const idx = adminData.entries.findIndex(en => en.id === editingId);
+      if (idx !== -1) adminData.entries[idx] = entry;
+    } else {
+      adminData.entries.push(entry);
+    }
+
+    markDirty();
+    resetForm();
+    renderEntryTable();
+    switchPage('entries');
+  });
+
+  document.getElementById('f-cancel').addEventListener('click', () => {
+    resetForm();
+    switchPage('entries');
+  });
+  document.getElementById('export-btn').addEventListener('click', () => {
+    exportLibrary();
+    clearDirty();
+  });
+  document.getElementById('reload-btn').addEventListener('click', async () => {
+    LIBRARY_DATA = null;
+    adminData = await loadLibraryData();
+    selectedIds.clear();
+    resetForm();
+    renderEntryTable();
+    clearDirty();
+  });
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (id) editEntry(id);
+}
+
+window.addEventListener('DOMContentLoaded', initAdmin);
+</script>
+</body>
+</html>
